@@ -213,22 +213,58 @@
         }
 
         function simpanPDFAndroid() {
-            const element = document.getElementById('capture-area');
-            const toolbar = document.getElementById('toolbar');
-            const labels = document.querySelectorAll('.label-eviden');
-            const tglInputs = document.querySelectorAll('.input-tgl');
-            const nama = document.getElementById('id_nama').value || "PPL";
-            
-            // Trik Ubah format tanggal ke Indo sebelum cetak
-            tglInputs.forEach(input => {
-                if(input.value) {
-                    const [y, m, d] = input.value.split('-');
-                    input.type = 'text';
-                    input.value = `${d}-${m}-${y}`;
-                }
-            });
+    const element = document.getElementById('capture-area');
+    const toolbar = document.getElementById('toolbar');
+    const labels = document.querySelectorAll('.label-eviden');
+    const tglInputs = document.querySelectorAll('.input-tgl');
+    const nama = document.getElementById('id_nama').value || "PPL";
+    
+    // 1. Ubah format tanggal ke Indo sebelum cetak
+    tglInputs.forEach(input => {
+        if(input.value && input.value.includes('-')) {
+            const [y, m, d] = input.value.split('-');
+            input.type = 'text';
+            input.value = `${d}-${m}-${y}`;
+        }
+    });
 
-            toolbar.style.display = 'none';
+    // 2. Sembunyikan toolbar total agar tidak memakan ruang (display none)
+    toolbar.style.display = 'none';
+    labels.forEach(el => el.style.visibility = 'hidden');
+
+    // 3. Pengaturan PDF yang lebih aman untuk HP
+    const opt = {
+        margin: [10, 10, 10, 10], // Margin keliling 10mm
+        filename: `LCS_${nama}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2, 
+            useCORS: true, 
+            scrollY: 0, // Paksa scroll ke atas agar tabel tidak terpotong
+            windowWidth: element.scrollWidth 
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // 4. Proses cetak
+    html2pdf().set(opt).from(element).save().then(() => {
+        // Kembalikan ke semula setelah cetak
+        tglInputs.forEach(input => {
+            if(input.value.includes('-')) {
+                const [d, m, y] = input.value.split('-');
+                input.type = 'date';
+                input.value = `${y}-${m}-${d}`;
+            }
+        });
+        toolbar.style.display = 'flex';
+        labels.forEach(el => el.style.visibility = 'visible');
+        alert("PDF Berhasil Disimpan!");
+    }).catch(err => {
+        console.error(err);
+        toolbar.style.display = 'flex';
+    });
+}
+        toolbar.style.display = 'none';
             labels.forEach(el => el.style.visibility = 'hidden');
 
             const opt = {
