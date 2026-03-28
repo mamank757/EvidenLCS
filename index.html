@@ -114,9 +114,9 @@
                         </select>
                     </td>
                 </tr>
-                <tr><td class="label-id">NAMA PENYULUH</td><td class="titik-id">:</td><td><input type="text" id="id_nama" placeholder="Ketik Nama..." oninput="simpanTeks('id_nama')"></td></tr>
+                <tr><td class="label-id">NAMA PENYULUH</td><td class="titik-id">:</td><td><input type="text" id="id_nama" placeholder="Cth. ABDUL RAHMAN, SP" oninput="simpanTeks('id_nama')"></td></tr>
                 <tr><td class="label-id">NIP</td><td class="titik-id">:</td><td><input type="text" id="id_nip" placeholder="Ketik NIP..." oninput="formatNIP(this); simpanTeks('id_nip')"></td></tr>
-                <tr><td class="label-id">WILBIN/WKPP</td><td class="titik-id">:</td><td><input type="text" id="id_wilayah" placeholder="Ketik Wilayah..." oninput="simpanTeks('id_wilayah')"></td></tr>
+                <tr><td class="label-id">WILBIN/WKPP</td><td class="titik-id">:</td><td><input type="text" id="id_wilayah" placeholder="Cth. DESA MANURUNG" oninput="simpanTeks('id_wilayah')"></td></tr>
             </table>
 
             <table class="tabel-data">
@@ -232,7 +232,7 @@
         }
 
         function simpanPDFAndroid() {
-            const element = document.getElementById('capture-area');
+            const element = document.querySelector('.kertas-a4');
             const toolbar = document.getElementById('toolbar');
             const labels = document.querySelectorAll('.label-eviden');
             const tglInputs = document.querySelectorAll('.input-tgl');
