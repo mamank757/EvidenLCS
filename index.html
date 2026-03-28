@@ -27,7 +27,7 @@
         .kertas-a4 { 
             width: 210mm; 
             min-height: 297mm; 
-            padding: 5mm 15mm 10mm 15mm; 
+            padding: 1mm 15mm 5mm 15mm; 
             background: white; 
             box-sizing: border-box; 
         }
@@ -249,7 +249,7 @@
             labels.forEach(el => el.style.visibility = 'hidden');
 
             const opt = {
-                margin: [5, 15, 10, 15], 
+                margin: [1, 15, 5, 15], 
                 filename: `LCS_${nama}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
