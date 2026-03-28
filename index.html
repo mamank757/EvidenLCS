@@ -25,13 +25,13 @@
         .kertas-wrapper { padding: 10px; display: flex; justify-content: center; }
         
         .kertas-a4 { 
-            width: 210mm; 
-            height: 297mm;
-overflow: hidden;
-            padding: 1mm 15mm 5mm 15mm; 
-            background: white; 
-            box-sizing: border-box; 
-        }
+    width: 210mm; 
+    height: 297mm; 
+    padding: 1mm 15mm 5mm 15mm; 
+    background: white; 
+    box-sizing: border-box; 
+    overflow: hidden;
+}
 
         .judul-laporan { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 25px; text-transform: uppercase; color:#000; line-height: 1.2; }
         
@@ -250,14 +250,13 @@ overflow: hidden;
             labels.forEach(el => el.style.visibility = 'hidden');
 
             const opt = {
-                margin: [5, 15, 5, 15], 
-                filename: `LCS_${nama}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 1.5, useCORS: true, scrollY: 0 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                // Memaksa library menghindari pemutusan halaman otomatis
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-            };
+    margin: [5, 10, 5, 10],
+    filename: `LCS_${nama}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 1.5, useCORS: true, scrollY: 0 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['css', 'legacy'] }
+};
 
             // Menggunakan .from().set().save() dengan target element yang bersih
             html2pdf().set(opt).from(element).save().then(() => {
