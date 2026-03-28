@@ -212,21 +212,30 @@
         }
 
         function muatDataLokal() {
-            tbody.innerHTML = "";
-            for (let i = 1; i <= jumlahBaris; i++) {
-                tbody.appendChild(renderBaris(i));
-                if(localStorage.getItem(`tgl_${i}`)) document.getElementById(`tgl_${i}`).value = localStorage.getItem(`tgl_${i}`);
-                if(localStorage.getItem(`judul_${i}`)) document.getElementById(`judul_${i}`).value = localStorage.getItem(`judul_${i}`);
-                
-                ['like', 'comen', 'share'].forEach(type => {
-                    const savedImg = localStorage.getItem(`img_${type}_${i}`);
-                    if(savedImg) {
-                        const imgEl = document.getElementById(`img_${type}_${i}`);
-                        imgEl.src = savedImg;
-                        imgEl.style.display = 'block';
-                    }
-                });
+    tbody.innerHTML = "";
+    for (let i = 1; i <= jumlahBaris; i++) {
+        tbody.appendChild(renderBaris(i));
+        
+        const tglSimpan = localStorage.getItem(`tgl_${i}`);
+        if(tglSimpan) {
+            // Jika Bapak ingin tetap menggunakan input kalender, 
+            // biarkan value apa adanya karena input date butuh format YYYY-MM-DD
+            document.getElementById(`tgl_${i}`).value = tglSimpan;
+        }
+        
+        if(localStorage.getItem(`judul_${i}`)) document.getElementById(`judul_${i}`).value = localStorage.getItem(`judul_${i}`);
+        
+        ['like', 'comen', 'share'].forEach(type => {
+            const savedImg = localStorage.getItem(`img_${type}_${i}`);
+            if(savedImg) {
+                const imgEl = document.getElementById(`img_${type}_${i}`);
+                imgEl.src = savedImg;
+                imgEl.style.display = 'block';
             }
+        });
+    }
+    // ... sisa kode lainnya ...
+}
             ['id_periode', 'id_nama', 'id_nip', 'id_wilayah'].forEach(id => {
                 const val = localStorage.getItem(id);
                 if(val) document.getElementById(id).value = val;
