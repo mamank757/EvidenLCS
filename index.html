@@ -103,12 +103,35 @@
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
         .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; }
 
-        @media screen and (max-width: 768px) {
-            .kertas-a4 { width: 100% !important; padding: 12px !important; min-height: auto; }
-            .label-id { width: 130px; }
-            .foto-container { width: 80px; height: 160px; }
-            .col-tgl { width: 100px; }
-        }
+       @media screen and (max-width: 768px) {
+    /* Perkecil padding kertas agar area tabel lebih luas */
+    .kertas-a4 { 
+        width: 100% !important; 
+        padding: 8px !important; 
+        min-height: auto; 
+    }
+    
+    /* Lebar label identitas disesuaikan */
+    .label-id { width: 110px; font-size: 9pt; }
+    .identitas input, .identitas select { font-size: 9pt; }
+
+    /* PENYESUAIAN KOLOM HP */
+    .col-tgl { width: 85px; }  /* Perkecil kolom tanggal */
+    .col-foto { width: 70px; } /* Perkecil kolom foto agar tidak meluber */
+    th { font-size: 7pt !important; padding: 4px 1px !important; }
+
+    /* PERKECIL KOTAK FOTO DI LAYAR HP */
+    .foto-container { 
+        width: 65px;   /* Lebar kotak foto di HP diperkecil */
+        height: 100px;  /* Tinggi kotak foto di HP diperpendek agar muat */
+    }
+    
+    .label-foto { font-size: 6pt; } /* Perkecil teks panduan foto */
+    
+    /* Sesuaikan tinggi baris di HP agar tidak terlalu melar */
+    table.tabel-data td { height: 120px; }
+    textarea.input-judul { height: 100px; font-size: 8pt; }
+}
 
         .no-export { display: none !important; }
     </style>
