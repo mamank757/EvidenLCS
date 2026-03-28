@@ -53,33 +53,33 @@
         }
 
         table.tabel-data { width: 100%; border-collapse: collapse; border: 1.5px solid black; table-layout: fixed; }
-        table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 8.5pt; text-transform: uppercase; }
+        table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 10pt; text-transform: uppercase; }
         
         /* UKURAN SEL DIPERPANJANG KE BAWAH */
         table.tabel-data td { 
             border: 1px solid black; 
             padding: 4px; 
             vertical-align: middle; 
-            font-size: 9pt; 
+            font-size: 10.5pt; 
             text-align: center; 
             height: 190px; 
         }
 
         table.tabel-data tr { page-break-inside: avoid; }
 
-        .col-no { width: 30px; }
-        .col-tgl { width: 130px; } 
+        .col-no { width: 35px; }
+        .col-tgl { width: 160px; } /* Kolom tanggal diperlebar */
         .col-judul { width: auto; }
-        .col-foto { width: 95px; }
+        .col-foto { width: 110px; } /* Disesuaikan sedikit lebih lebar untuk foto */
 
-        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8.5pt; font-family: inherit; background: transparent; }
+        .input-tgl { width: 100%; border: none; text-align: center; font-size: 10.5pt; font-family: inherit; background: transparent; }
         
         textarea.input-judul { 
             width: 95%; 
             height: 170px; 
             border: none; 
             resize: none; 
-            font-size: 9pt; 
+            font-size: 10.5pt; 
             font-family: inherit; 
             padding: 5px; 
             background: transparent; 
@@ -87,7 +87,7 @@
         }
 
         .foto-container { 
-            width: 85px; 
+            width: 100%; /* Foto diperlebar sesuai kolom */
             height: 180px; 
             border: 1px dashed #ccc; 
             margin: auto; 
@@ -101,19 +101,17 @@
         
         .img-preview { width: 100%; height: 100%; object-fit: cover; display: none; }
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
-        .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; }
+        .label-foto { font-size: 8pt; color: #888; text-align: center; font-weight: bold; }
 
      @media screen and (max-width: 768px)
         { .kertas-a4 { width: 100% !important; padding: 10px !important; min-height: auto; }
-         .label-id { width: 110px; font-size: 8pt; }
-         .col-tgl { width: 50px; }
-         .col-foto { width: auto; } th { font-size: 7pt !important; }
-         .foto-container { width: 50px; height: 110px; } table.tabel-data td { height: 130px; }
-         textarea.input-judul { height: 110px; } }
+          .label-id { width: 110px; font-size: 8pt; }
+          .col-tgl { width: 80px; }
+          .col-foto { width: auto; } th { font-size: 8pt !important; }
+          .foto-container { width: 100%; height: 110px; } table.tabel-data td { height: 130px; }
+          textarea.input-judul { height: 110px; font-size: 9pt; } }
 
 .no-export { display: none !important; }
-
-        .no-export { display: none !important; }
     </style>
 </head>
 <body onload="muatDataLokal()">
@@ -193,12 +191,11 @@
     const tahun = today.getFullYear();
     const bulan = String(today.getMonth() + 1).padStart(2, '0');
     const hari = String(today.getDate()).padStart(2, '0');
-    return `${tahun}-${bulan}-${hari}`; // format wajib untuk input date
+    return `${tahun}-${bulan}-${hari}`; 
 }
     const tbody = document.getElementById('table-body');
     let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 3;
 
-    // ✅ TAMBAHAN: fungsi format tanggal
     function formatTanggalIndonesia(tgl) {
         if (!tgl) return "";
         const [tahun, bulan, hari] = tgl.split("-");
@@ -216,7 +213,6 @@
         <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
     `;
 
-    // ✅ TAMBAHAN PENTING (AUTO SIMPAN)
     setTimeout(() => {
         const el = document.getElementById(`tgl_${i}`);
         if (el && !localStorage.getItem(`tgl_${i}`)) {
@@ -288,7 +284,6 @@
         toolbar.style.display = 'none';
         labels.forEach(el => el.style.display = 'none');
 
-        // ✅ TAMBAHAN: ubah format tanggal sebelum PDF
         const semuaTanggal = document.querySelectorAll('input[type="date"]');
         semuaTanggal.forEach(input => {
             const val = input.value;
@@ -308,8 +303,6 @@
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
-
-            // ✅ TAMBAHAN: kembalikan seperti semula
             semuaTanggal.forEach(input => {
                 const asli = input.getAttribute("data-asli");
                 if(asli){
