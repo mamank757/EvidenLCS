@@ -1,284 +1,224 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EVIDEN LCS DIGITAL - King Mamank</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EVIDEN LCS DIGITAL - King Mamank</title>
 
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #000; margin: 0; padding: 0; }
-        
-        /* PANEL KENDALI */
-        .panel-kendali {
-            background: #ffffff; padding: 10px; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%;
-        }
-        
-        button { padding: 10px 12px; cursor: pointer; border-radius: 6px; border: none; color: white; font-weight: bold; font-size: 11px; }
-        .btn-print { background: #0b544e; flex: 2; margin: 0 5px; }
-        .btn-add { background: #27ae60; flex: 1; }
-        .btn-reset { background: #dc3545; flex: 1; }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-        .kertas-wrapper { padding: 10px; display: flex; justify-content: center; }
-        
-        .kertas-a4 { 
-    width: 210mm; 
-    height: 297mm; 
-    padding: 1mm 15mm 5mm 15mm; 
-    background: white; 
-    box-sizing: border-box; 
+<style>
+* { box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #000; margin: 0; padding: 0; }
+
+.panel-kendali {
+    background: #ffffff; padding: 10px; display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%;
+}
+
+button { padding: 10px 12px; cursor: pointer; border-radius: 6px; border: none; color: white; font-weight: bold; font-size: 11px; }
+.btn-print { background: #0b544e; flex: 2; margin: 0 5px; }
+.btn-add { background: #27ae60; flex: 1; }
+.btn-reset { background: #dc3545; flex: 1; }
+
+.kertas-wrapper { padding: 10px; display: flex; justify-content: center; }
+
+.kertas-a4 {
+    width: 210mm;
+    height: 297mm;
+    padding: 5mm 12mm 5mm 12mm;
+    background: white;
+    box-sizing: border-box;
     overflow: hidden;
 }
 
-        .judul-laporan { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 25px; text-transform: uppercase; color:#000; line-height: 1.2; }
-        
-        .identitas { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; color:#000; table-layout: fixed; }
-        .identitas td { padding: 5px 0; vertical-align: middle; border: none !important; }
-        .label-id { width: 150px; font-weight: bold; white-space: nowrap; }
-        .titik-id { width: 20px; text-align: center; font-weight: bold; }
-        .identitas input, .identitas select { 
-            width: 100%; border: none; font-size: 11pt; padding: 2px; 
-            font-family: inherit; background: transparent; outline: none; color: black; 
-        }
+.judul-laporan {
+    text-align: center;
+    font-weight: bold;
+    font-size: 12pt;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
 
-        /* TABEL DATA - Tinggi dikurangi sedikit agar muat 1 halaman */
-        table.tabel-data { width: 100%; border-collapse: collapse; border: 1.5px solid black; table-layout: fixed; }
-        table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 8.5pt; text-transform: uppercase; }
-        table.tabel-data td { border: 1px solid black; padding: 4px; vertical-align: middle; font-size: 9pt; text-align: center; height: 175px; }
+.identitas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    font-size: 10pt;
+    table-layout: fixed;
+}
 
-        .col-no { width: 30px; }
-        .col-tgl { width: 100px; } 
-        .col-judul { width: auto; }
-        .col-foto { width: 100px; }
+.identitas td { padding: 4px 0; }
 
-        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8.5pt; font-family: inherit; background: transparent; outline: none; }
-        textarea.input-judul { width: 95%; height: 160px; border: none; resize: none; font-size: 9pt; font-family: inherit; padding: 5px; background: transparent; overflow: hidden; outline: none; }
+.label-id { width: 140px; font-weight: bold; }
+.titik-id { width: 15px; text-align: center; }
 
-        .foto-container { 
-            width: 100%; height: 165px; border: 1px dashed #ccc; margin: auto; position: relative; 
-            background: #fafafa; display: flex; align-items: center; justify-content: center; overflow: hidden; 
-        }
-        .img-preview { width: 100%; height: 100%; object-fit: contain; display: none; background: #fff; }
-        .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
-        .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; position: absolute; pointer-events: none; z-index: 1; }
+.identitas input, .identitas select {
+    width: 100%;
+    border: none;
+    font-size: 10pt;
+    background: transparent;
+    outline: none;
+}
 
-        @media screen and (max-width: 768px) {
-            .kertas-a4 { width: 100% !important; padding: 10mm 5mm !important; }
-            .col-no { width: 25px !important; }
-            .col-tgl { width: 75px !important; } 
-            .col-judul { width: auto !important; }
-            .col-foto { width: 85px !important; }
-            table.tabel-data td { height: 150px; }
-            .foto-container { height: 150px; }
-            .label-id { width: 120px; }
-        }
+table.tabel-data {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1.5px solid black;
+    table-layout: fixed;
+}
 
-        @media print {
-            .col-tgl { width: 115px !important; } 
-            .col-no { width: 30px !important; }
-            .col-judul { width: auto !important; }
-            .col-foto { width: 95px !important; }
-            table.tabel-data td { height: 175px !important; }
-            .foto-container { height: 165px !important; }
-        }
-    </style>
+table.tabel-data th {
+    background-color: #2ecc71 !important;
+    color: black;
+    padding: 6px 2px;
+    border: 1px solid black;
+    font-size: 8pt;
+}
+
+table.tabel-data td {
+    border: 1px solid black;
+    padding: 3px;
+    font-size: 8pt;
+    text-align: center;
+    height: 150px;
+}
+
+.col-no { width: 30px; }
+.col-tgl { width: 90px; }
+.col-foto { width: 90px; }
+
+textarea.input-judul {
+    width: 95%;
+    height: 135px;
+    border: none;
+    resize: none;
+    font-size: 8pt;
+    outline: none;
+}
+
+.foto-container {
+    width: 100%;
+    height: 135px;
+    border: 1px dashed #ccc;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+}
+
+.file-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.label-foto {
+    font-size: 7pt;
+    color: #888;
+    text-align: center;
+    position: absolute;
+}
+</style>
 </head>
+
 <body onload="muatDataLokal()">
 
-    <div class="panel-kendali" id="toolbar">
-        <button class="btn-add" onclick="tambahBaris()">+ BARIS</button>
-        <button class="btn-print" onclick="simpanPDFAndroid()">💾 SIMPAN PDF</button>
-        <button class="btn-reset" onclick="tampilkanPopup()">🔄 RESET</button>
-    </div>
+<div class="panel-kendali" id="toolbar">
+<button class="btn-add" onclick="tambahBaris()">+ BARIS</button>
+<button class="btn-print" onclick="simpanPDFAndroid()">💾 SIMPAN PDF</button>
+<button class="btn-reset" onclick="location.reload()">🔄 RESET</button>
+</div>
 
-    <div class="kertas-wrapper" id="capture-area">
-        <div class="kertas-a4">
-            <div class="judul-laporan">
-                LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN<br>
-                PENYULUH PERTANIAN TAHUN 2026
-            </div>
+<div class="kertas-wrapper" id="capture-area">
+<div class="kertas-a4">
 
-            <table class="identitas">
-                <tr>
-                    <td class="label-id">PERIODE</td><td class="titik-id">:</td>
-                    <td>
-                        <select id="id_periode" onchange="simpanTeks('id_periode')">
-                            <option value="">-- Pilih Bulan --</option>
-                            <option>JANUARI</option><option>FEBRUARI</option><option>MARET</option>
-                            <option>APRIL</option><option>MEI</option><option>JUNI</option>
-                            <option>JULI</option><option>AGUSTUS</option><option>SEPTEMBER</option>
-                            <option>OKTOBER</option><option>NOVEMBER</option><option>DESEMBER</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr><td class="label-id">NAMA PENYULUH</td><td class="titik-id">:</td><td><input type="text" id="id_nama" placeholder="Cth. ABDUL RAHMAN, SP" oninput="simpanTeks('id_nama')"></td></tr>
-                <tr><td class="label-id">NIP</td><td class="titik-id">:</td><td><input type="text" id="id_nip" placeholder="Ketik NIP..." oninput="formatNIP(this); simpanTeks('id_nip')"></td></tr>
-                <tr><td class="label-id">WILBIN/WKPP</td><td class="titik-id">:</td><td><input type="text" id="id_wilayah" placeholder="Cth. DESA MANURUNG" oninput="simpanTeks('id_wilayah')"></td></tr>
-            </table>
+<div class="judul-laporan">
+LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN<br>
+PENYULUH PERTANIAN TAHUN 2026
+</div>
 
-            <table class="tabel-data">
-                <thead>
-                    <tr>
-                        <th class="col-no" rowspan="2">NO</th>
-                        <th class="col-tgl" rowspan="2">TANGGAL</th>
-                        <th class="col-judul" rowspan="2">JUDUL KONTEN</th>
-                        <th colspan="3">EVIDEN</th>
-                    </tr>
-                    <tr>
-                        <th class="col-foto">LIKE</th>
-                        <th class="col-foto">COMMENT</th>
-                        <th class="col-foto">SHARE</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body"></tbody>
-            </table>
-        </div>
-    </div>
+<table class="identitas">
+<tr><td class="label-id">PERIODE</td><td class="titik-id">:</td><td><input id="id_periode"></td></tr>
+<tr><td class="label-id">NAMA</td><td class="titik-id">:</td><td><input id="id_nama"></td></tr>
+<tr><td class="label-id">NIP</td><td class="titik-id">:</td><td><input id="id_nip"></td></tr>
+<tr><td class="label-id">WILAYAH</td><td class="titik-id">:</td><td><input id="id_wilayah"></td></tr>
+</table>
 
-    <div id="popup-reset" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center;">
-        <div style="background:white; padding:20px; border-radius:10px; text-align:center; max-width:80%;">
-            <p style="font-weight:bold;">Bersihkan data laporan?</p>
-            <div style="display:flex; gap:10px;">
-                <button onclick="konfirmasiReset()" style="background:#dc3545; flex:1;">Ya, Hapus</button>
-                <button onclick="tutupPopup()" style="background:#6c757d; flex:1;">Batal</button>
-            </div>
-        </div>
-    </div>
+<table class="tabel-data">
+<thead>
+<tr>
+<th class="col-no">NO</th>
+<th class="col-tgl">TGL</th>
+<th>JUDUL</th>
+<th class="col-foto">LIKE</th>
+<th class="col-foto">COMMENT</th>
+<th class="col-foto">SHARE</th>
+</tr>
+</thead>
+<tbody id="table-body"></tbody>
+</table>
 
-    <script>
-        const tbody = document.getElementById('table-body');
-        let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 2;
+</div>
+</div>
 
-        function getTanggalHariIni() {
-            const tgl = new Date();
-            const yyyy = tgl.getFullYear();
-            const mm = String(tgl.getMonth() + 1).padStart(2, '0');
-            const dd = String(tgl.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
-        }
+<script>
+const tbody = document.getElementById('table-body');
+let jumlahBaris = 2;
 
-        function renderBaris(i) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${i}</td>
-                <td><input type="date" id="tgl_${i}" class="input-tgl" onchange="simpanTeks('tgl_${i}')"></td>
-                <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
-                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
-                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
-                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
-            `;
-            return tr;
-        }
+function renderBaris(i){
+const tr=document.createElement('tr');
+tr.innerHTML=`
+<td>${i}</td>
+<td><input type="date"></td>
+<td><textarea class="input-judul"></textarea></td>
+<td><div class="foto-container"><input type="file" class="file-input"></div></td>
+<td><div class="foto-container"><input type="file" class="file-input"></div></td>
+<td><div class="foto-container"><input type="file" class="file-input"></div></td>
+`;
+return tr;
+}
 
-        function muatDataLokal() {
-            tbody.innerHTML = "";
-            for (let i = 1; i <= jumlahBaris; i++) {
-                tbody.appendChild(renderBaris(i));
-                const inputTgl = document.getElementById(`tgl_${i}`);
-                const tglSimpan = localStorage.getItem(`tgl_${i}`);
-                inputTgl.value = tglSimpan ? tglSimpan : getTanggalHariIni();
+function muatDataLokal(){
+tbody.innerHTML="";
+for(let i=1;i<=jumlahBaris;i++){
+tbody.appendChild(renderBaris(i));
+}
+}
 
-                const judulSimpan = localStorage.getItem(`judul_${i}`);
-                if(judulSimpan) document.getElementById(`judul_${i}`).value = judulSimpan;
-                
-                ['like', 'comen', 'share'].forEach(type => {
-                    const idImg = `img_${type}_${i}`;
-                    const savedImg = localStorage.getItem(idImg);
-                    if(savedImg) {
-                        const imgEl = document.getElementById(idImg);
-                        imgEl.src = savedImg;
-                        imgEl.style.display = 'block';
-                    }
-                });
-            }
-            ['id_periode', 'id_nama', 'id_nip', 'id_wilayah'].forEach(id => {
-                const val = localStorage.getItem(id);
-                if(val) document.getElementById(id).value = val;
-            });
-        }
+function tambahBaris(){
+jumlahBaris++;
+tbody.appendChild(renderBaris(jumlahBaris));
+}
 
-        function tambahBaris() {
-            jumlahBaris++;
-            localStorage.setItem('jumlahBaris', jumlahBaris);
-            tbody.appendChild(renderBaris(jumlahBaris));
-            const tglBaru = document.getElementById(`tgl_${jumlahBaris}`);
-            tglBaru.value = getTanggalHariIni();
-            localStorage.setItem(`tgl_${jumlahBaris}`, tglBaru.value);
-        }
+function simpanPDFAndroid(){
+const element = document.querySelector('.kertas-a4'); // 🔥 FIX UTAMA
+const wrapper = document.querySelector('.kertas-wrapper');
 
-        function simpanTeks(id) { 
-            const el = document.getElementById(id);
-            if(el) localStorage.setItem(id, el.value); 
-        }
+wrapper.style.padding='0';
 
-        function prosesGambar(input, imgId) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.getElementById(imgId);
-                    img.src = e.target.result;
-                    img.style.display = 'block';
-                    try { localStorage.setItem(imgId, e.target.result); } catch(err) { alert("Memori penuh!"); }
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+document.getElementById('toolbar').style.display='none';
 
-        function formatNIP(input) {
-            input.value = input.value.replace(/\D/g, '').substr(0, 18);
-        }
+html2pdf().set({
+margin:0,
+filename:'LCS.pdf',
+html2canvas:{scale:1},
+jsPDF:{unit:'mm',format:'a4'}
+}).from(element).save().then(()=>{
+wrapper.style.padding='10px';
+document.getElementById('toolbar').style.display='flex';
+});
+}
+</script>
 
-        function simpanPDFAndroid() {
-            const element = document.querySelector('.kertas-a4');
-            const toolbar = document.getElementById('toolbar');
-            const labels = document.querySelectorAll('.label-eviden');
-            const tglInputs = document.querySelectorAll('.input-tgl');
-            const nama = document.getElementById('id_nama').value || "PPL";
-            
-            tglInputs.forEach(input => {
-                if(input.value && input.value.includes('-')) {
-                    const [y, m, d] = input.value.split('-');
-                    input.type = 'text';
-                    input.value = `${d}-${m}-${y}`;
-                }
-            });
-
-            toolbar.style.display = 'none';
-            labels.forEach(el => el.style.visibility = 'hidden');
-
-            const opt = {
-    margin: [5, 10, 5, 10],
-    filename: `LCS_${nama}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 1.5, useCORS: true, scrollY: 0 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['css', 'legacy'] }
-};
-
-            // Menggunakan .from().set().save() dengan target element yang bersih
-            html2pdf().set(opt).from(element).save().then(() => {
-                tglInputs.forEach(input => {
-                    if(input.value.includes('-')) {
-                        const [d, m, y] = input.value.split('-');
-                        input.type = 'date';
-                        input.value = `${y}-${m}-${d}`;
-                    }
-                });
-                toolbar.style.display = 'flex';
-                labels.forEach(el => el.style.visibility = 'visible');
-                alert("PDF Berhasil Disimpan!");
-            }).catch(err => {
-                toolbar.style.display = 'flex';
-                console.error(err);
-            });
-        }
-
-        function tampilkanPopup() { document.getElementById('popup-reset').style.display = 'flex'; }
-        function tutupPopup() { document.getElementById('popup-reset').style.display = 'none'; }
-        function konfirmasiReset() { localStorage.clear(); location.reload(); }
-    </script>
 </body>
 </html>
