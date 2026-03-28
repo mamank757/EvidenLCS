@@ -59,33 +59,40 @@
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
         .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; position: absolute; pointer-events: none; z-index: 1; }
 
-     @media screen and (max-width: 768px) {
-        /* Kertas menyesuaikan lebar layar HP */
-        .kertas-a4 { 
-            width: 100% !important; 
-            padding: 8mm 5mm !important; 
-            min-height: auto; 
-        }
+    /* ... (Kode CSS bagian atas tetap sama) ... */
 
-        /* SEMPITKAN KOLOM: Nomor dan Tanggal di layar HP */
+    /* 1. TAMPILAN MONITOR HP (Hanya di layar HP) */
+    @media screen and (max-width: 768px) {
+        .kertas-a4 { width: 100% !important; padding: 10mm 5mm !important; }
         .col-no { width: 25px !important; }
-        .col-tgl { width: 70px !important; } 
-        
-        /* LEBARKAN KOLOM: Judul dan Foto menyesuaikan sisa ruang */
+        .col-tgl { width: 75px !important; } /* Sempit di layar HP */
         .col-judul { width: auto !important; }
         .col-foto { width: 85px !important; }
-
-        /* Kecilkan sedikit teks di HP agar tidak berantakan */
-        .judul-laporan { font-size: 11pt; }
-        .label-id { width: 120px; font-size: 10pt; }
-        .identitas input, .identitas select { font-size: 10pt; }
-        
-        /* Kecilkan input tanggal di layar HP agar muat di kolom sempit */
-        .input-tgl { font-size: 7.5pt !important; }
-        
-        /* Sesuaikan tinggi foto di layar HP agar tidak terlalu memanjang */
         table.tabel-data td { height: 160px; }
         .foto-container { height: 150px; }
+    }
+
+    /* 2. TAMPILAN HASIL CETAK PDF (Media Print) */
+    /* Ini yang akan dibaca oleh html2pdf saat proses download */
+    @media print {
+        /* Lebarkan kolom tanggal di PDF agar lebih lega */
+        .col-tgl { width: 115px !important; } 
+        
+        /* Kecilkan kolom nomor karena hanya butuh sedikit ruang */
+        .col-no { width: 30px !important; }
+        
+        /* Kolom judul akan otomatis menyesuaikan sisa lebar kertas */
+        .col-judul { width: auto !important; }
+        
+        /* Kolom foto (Like, Comment, Share) dibuat standar 95px agar pas di A4 */
+        .col-foto { width: 95px !important; }
+        
+        /* Pastikan tinggi baris kembali ke standar laporan (190px) */
+        table.tabel-data td { height: 190px !important; }
+        .foto-container { height: 180px !important; }
+        
+        /* Hilangkan garis bawah input agar hasil PDF bersih/formal */
+        .identitas input, .identitas select { border-bottom: none !important; }
     }
     </style>
 </head>
