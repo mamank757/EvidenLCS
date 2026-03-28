@@ -176,103 +176,130 @@
         </div>
     </div>
 
-    <script>
-        const tbody = document.getElementById('table-body');
-        let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 2;
+  <script>
+    const tbody = document.getElementById('table-body');
+    let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 2;
 
-        function renderBaris(i) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${i}</td>
-                <td><input type="date" id="tgl_${i}" class="input-tgl" oninput="simpanTeks('tgl_${i}')"></td>
-                <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
-                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
-                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
-                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
-            `;
-            return tr;
-        }
+    // ✅ TAMBAHAN: fungsi format tanggal
+    function formatTanggalIndonesia(tgl) {
+        if (!tgl) return "";
+        const [tahun, bulan, hari] = tgl.split("-");
+        return `${hari}-${bulan}-${tahun}`;
+    }
 
-        function muatDataLokal() {
-            tbody.innerHTML = "";
-            for (let i = 1; i <= jumlahBaris; i++) {
-                tbody.appendChild(renderBaris(i));
-                
-                const tglSimpan = localStorage.getItem(`tgl_${i}`);
-                if(tglSimpan) document.getElementById(`tgl_${i}`).value = tglSimpan;
-                
-                const judulSimpan = localStorage.getItem(`judul_${i}`);
-                if(judulSimpan) document.getElementById(`judul_${i}`).value = judulSimpan;
-                
-                ['like', 'comen', 'share'].forEach(type => {
-                    const savedImg = localStorage.getItem(`img_${type}_${i}`);
-                    if(savedImg) {
-                        const imgEl = document.getElementById(`img_${type}_${i}`);
-                        imgEl.src = savedImg;
-                        imgEl.style.display = 'block';
-                    }
-                });
-            }
-            ['id_periode', 'id_nama', 'id_nip', 'id_wilayah'].forEach(id => {
-                const val = localStorage.getItem(id);
-                if(val) document.getElementById(id).value = val;
-            });
-        }
+    function renderBaris(i) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${i}</td>
+            <td><input type="date" id="tgl_${i}" class="input-tgl" oninput="simpanTeks('tgl_${i}')"></td>
+            <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
+            <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
+            <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
+            <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
+        `;
+        return tr;
+    }
 
-        function tambahBaris() {
-            jumlahBaris++;
-            localStorage.setItem('jumlahBaris', jumlahBaris);
-            tbody.appendChild(renderBaris(jumlahBaris));
-        }
-
-        function simpanTeks(id) { localStorage.setItem(id, document.getElementById(id).value); }
-
-        function prosesGambar(input, imgId) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.getElementById(imgId);
-                    img.src = e.target.result;
-                    img.style.display = 'block';
-                    try { localStorage.setItem(imgId, e.target.result); } catch(err) { alert("Memori penuh"); }
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function formatNIP(input) {
-            let val = input.value.replace(/\D/g, '');
-            if (val.length > 18) val = val.substr(0, 18);
-            input.value = val.replace(/(\d{8})(\d{6})(\d{1})(\d{3})/, '$1 $2 $3 $4');
-        }
-
-        function simpanPDFAndroid() {
-            const element = document.getElementById('capture-area');
-            const toolbar = document.getElementById('toolbar');
-            const labels = document.querySelectorAll('.label-eviden');
-            const nama = document.getElementById('id_nama').value || "PPL";
+    function muatDataLokal() {
+        tbody.innerHTML = "";
+        for (let i = 1; i <= jumlahBaris; i++) {
+            tbody.appendChild(renderBaris(i));
             
-            toolbar.style.display = 'none';
-            labels.forEach(el => el.style.display = 'none');
-
-            const opt = {
-                margin: [8, 5, 8, 5],
-                filename: `LCS_${nama}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(element).save().then(() => {
-                toolbar.style.display = 'flex';
-                labels.forEach(el => el.style.display = '');
-                alert("Laporan PDF berhasil disimpan!");
+            const tglSimpan = localStorage.getItem(`tgl_${i}`);
+            if(tglSimpan) document.getElementById(`tgl_${i}`).value = tglSimpan;
+            
+            const judulSimpan = localStorage.getItem(`judul_${i}`);
+            if(judulSimpan) document.getElementById(`judul_${i}`).value = judulSimpan;
+            
+            ['like', 'comen', 'share'].forEach(type => {
+                const savedImg = localStorage.getItem(`img_${type}_${i}`);
+                if(savedImg) {
+                    const imgEl = document.getElementById(`img_${type}_${i}`);
+                    imgEl.src = savedImg;
+                    imgEl.style.display = 'block';
+                }
             });
         }
+        ['id_periode', 'id_nama', 'id_nip', 'id_wilayah'].forEach(id => {
+            const val = localStorage.getItem(id);
+            if(val) document.getElementById(id).value = val;
+        });
+    }
 
-        function tampilkanPopup() { document.getElementById('popup-reset').style.display = 'flex'; }
-        function tutupPopup() { document.getElementById('popup-reset').style.display = 'none'; }
-        function konfirmasiReset() { localStorage.clear(); location.reload(); }
-    </script>
-</body>
+    function tambahBaris() {
+        jumlahBaris++;
+        localStorage.setItem('jumlahBaris', jumlahBaris);
+        tbody.appendChild(renderBaris(jumlahBaris));
+    }
+
+    function simpanTeks(id) { localStorage.setItem(id, document.getElementById(id).value); }
+
+    function prosesGambar(input, imgId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById(imgId);
+                img.src = e.target.result;
+                img.style.display = 'block';
+                try { localStorage.setItem(imgId, e.target.result); } catch(err) { alert("Memori penuh"); }
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function formatNIP(input) {
+        let val = input.value.replace(/\D/g, '');
+        if (val.length > 18) val = val.substr(0, 18);
+        input.value = val.replace(/(\d{8})(\d{6})(\d{1})(\d{3})/, '$1 $2 $3 $4');
+    }
+
+    function simpanPDFAndroid() {
+        const element = document.getElementById('capture-area');
+        const toolbar = document.getElementById('toolbar');
+        const labels = document.querySelectorAll('.label-eviden');
+        const nama = document.getElementById('id_nama').value || "PPL";
+        
+        toolbar.style.display = 'none';
+        labels.forEach(el => el.style.display = 'none');
+
+        // ✅ TAMBAHAN: ubah format tanggal sebelum PDF
+        const semuaTanggal = document.querySelectorAll('input[type="date"]');
+        semuaTanggal.forEach(input => {
+            const val = input.value;
+            if(val){
+                input.setAttribute("data-asli", val);
+                input.type = "text";
+                input.value = formatTanggalIndonesia(val);
+            }
+        });
+
+        const opt = {
+            margin: [8, 5, 8, 5],
+            filename: `LCS_${nama}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+
+            // ✅ TAMBAHAN: kembalikan seperti semula
+            semuaTanggal.forEach(input => {
+                const asli = input.getAttribute("data-asli");
+                if(asli){
+                    input.type = "date";
+                    input.value = asli;
+                }
+            });
+
+            toolbar.style.display = 'flex';
+            labels.forEach(el => el.style.display = '');
+            alert("Laporan PDF berhasil disimpan!");
+        });
+    }
+
+    function tampilkanPopup() { document.getElementById('popup-reset').style.display = 'flex'; }
+    function tutupPopup() { document.getElementById('popup-reset').style.display = 'none'; }
+    function konfirmasiReset() { localStorage.clear(); location.reload(); }
+</script>
 </html>
