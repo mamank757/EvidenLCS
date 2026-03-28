@@ -194,19 +194,27 @@
         return `${hari}-${bulan}-${tahun}`;
     }
 
-    function renderBaris(i) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${i}</td>
-            <td><input type="date" id="tgl_${i}" class="input-tgl" value="${tanggalHariIni()}" oninput="simpanTeks('tgl_${i}')"></td>
-            <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
-            <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
-            <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
-            <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
-        `;
-        return tr;
-    }
+   function renderBaris(i) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${i}</td>
+        <td><input type="date" id="tgl_${i}" class="input-tgl" value="${tanggalHariIni()}" oninput="simpanTeks('tgl_${i}')"></td>
+        <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
+        <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
+        <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
+        <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
+    `;
 
+    // ✅ TAMBAHAN PENTING (AUTO SIMPAN)
+    setTimeout(() => {
+        const el = document.getElementById(`tgl_${i}`);
+        if (el && !localStorage.getItem(`tgl_${i}`)) {
+            simpanTeks(`tgl_${i}`);
+        }
+    }, 0);
+
+    return tr;
+}
     function muatDataLokal() {
         tbody.innerHTML = "";
         for (let i = 1; i <= jumlahBaris; i++) {
