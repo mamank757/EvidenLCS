@@ -11,6 +11,29 @@
         * { box-sizing: border-box; }
         body { font-family: 'Times New Roman', Times, serif; background: #000; margin: 0; padding: 0; }
         
+        /* TOMBOL HOME MELAYANG */
+        .btn-home {
+            position: fixed;
+            bottom: 80px; /* Di atas tombol tambah baris agar tidak tabrakan di mobile */
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 10001;
+            border: 2px solid white;
+            transition: 0.3s;
+        }
+
+        .btn-home:hover { transform: scale(1.1); background: #ffffff; color: #27ae60; }
+
         /* PANEL KENDALI */
         .panel-kendali {
             background: #ffffff; 
@@ -55,28 +78,27 @@
         table.tabel-data { width: 100%; border-collapse: collapse; border: 1.5px solid black; table-layout: fixed; }
         table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 10pt; text-transform: uppercase; }
         
-        /* UKURAN SEL DIPERPANJANG KE BAWAH */
         table.tabel-data td { 
             border: 1px solid black; 
             padding: 4px; 
             vertical-align: middle; 
             font-size: 10.5pt; 
             text-align: center; 
-            height: 220px; 
+            height: auto; 
         }
 
         table.tabel-data tr { page-break-inside: avoid; }
 
         .col-no { width: 30px; }
-        .col-tgl { width: 165px; } /* Kolom tanggal diperlebar */
+        .col-tgl { width: 130px; }
         .col-judul { width: auto; }
-        .col-foto { width: 110px; } /* Disesuaikan sedikit lebih lebar untuk foto */
+        .col-foto { width: 110px; }
 
         .input-tgl { width: 100%; border: none; text-align: center; font-size: 10pt; font-family: inherit; background: transparent; }
         
         textarea.input-judul { 
             width: 95%; 
-            height: 260px; 
+            height: auto; 
             border: none; 
             resize: none; 
             font-size: 10pt; 
@@ -87,8 +109,8 @@
         }
 
         .foto-container { 
-            width: 100%; /* Foto diperlebar sesuai kolom */
-            height: 200px; 
+            width: 100%; 
+            height: 160px; 
             border: 1px dashed #ccc; 
             margin: auto; 
             position: relative; 
@@ -106,15 +128,19 @@
      @media screen and (max-width: 768px)
         { .kertas-a4 { width: 100% !important; padding: 10px !important; min-height: auto; }
           .label-id { width: 110px; font-size: 8pt; }
-          .col-tgl { width: 80px; }
+          .col-tgl { width: 75px; }
           .col-foto { width: auto; } th { font-size: 8pt !important; }
           .foto-container { width: 100%; height: 110px; } table.tabel-data td { height: 130px; }
-          textarea.input-judul { height: 110px; font-size: 9pt; } }
+          textarea.input-judul { height: 110px; font-size: 9pt; } 
+          .btn-home { bottom: 20px; width: 45px; height: 45px; font-size: 20px; }
+        }
 
-.no-export { display: none !important; }
+    .no-export { display: none !important; }
     </style>
 </head>
 <body onload="muatDataLokal()">
+
+    <a href="https://mamank757.github.io/PPL" class="btn-home" id="home-btn" title="Dashboard">🏠</a>
 
     <div class="panel-kendali" id="toolbar">
         <button class="btn-add" onclick="tambahBaris()">+ BARIS</button>
@@ -170,7 +196,7 @@
 
     <div id="popup-reset" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center;">
         <div style="background:white; padding:20px; border-radius:10px; text-align:center; max-width:80%;">
-            <p style="font-weight:bold;">Bersihkan data laporan?</p>
+            <p style="color:black; font-weight:bold;">Bersihkan data laporan?</p>
             <div style="display:flex; gap:10px;">
                 <button onclick="konfirmasiReset()" style="background:#dc3545; flex:1;">Ya, Hapus</button>
                 <button onclick="tutupPopup()" style="background:#6c757d; flex:1;">Batal</button>
@@ -179,20 +205,19 @@
     </div>
 
   <script>
-      function tanggalHariIniFormatFile() {
-    const today = new Date();
-    const hari = String(today.getDate()).padStart(2, '0');
-    const bulan = String(today.getMonth() + 1).padStart(2, '0');
-    const tahun = today.getFullYear();
-    return `${hari}-${bulan}-${tahun}`;
-}
-      function tanggalHariIni() {
-    const today = new Date();
-    const tahun = today.getFullYear();
-    const bulan = String(today.getMonth() + 1).padStart(2, '0');
-    const hari = String(today.getDate()).padStart(2, '0');
-    return `${tahun}-${bulan}-${hari}`; 
-}
+    function tanggalHariIniFormatFile() {
+        const today = new Date();
+        const hari = String(today.getDate()).padStart(2, '0');
+        const bulan = String(today.getMonth() + 1).padStart(2, '0');
+        const tahun = today.getFullYear();
+        return `${hari}-${bulan}-${tahun}`;
+    }
+
+    function tanggalHariIni() {
+        const today = new Date();
+        return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; 
+    }
+
     const tbody = document.getElementById('table-body');
     let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 3;
 
@@ -203,36 +228,26 @@
     }
 
    function renderBaris(i) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-        <td>${i}</td>
-        <td><input type="date" id="tgl_${i}" class="input-tgl" value="${tanggalHariIni()}" oninput="simpanTeks('tgl_${i}')"></td>
-        <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
-        <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
-        <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
-        <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
-    `;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${i}</td>
+            <td><input type="date" id="tgl_${i}" class="input-tgl" value="${tanggalHariIni()}" oninput="simpanTeks('tgl_${i}')"></td>
+            <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
+            <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
+            <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
+            <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
+        `;
+        return tr;
+    }
 
-    setTimeout(() => {
-        const el = document.getElementById(`tgl_${i}`);
-        if (el && !localStorage.getItem(`tgl_${i}`)) {
-            simpanTeks(`tgl_${i}`);
-        }
-    }, 0);
-
-    return tr;
-}
     function muatDataLokal() {
         tbody.innerHTML = "";
         for (let i = 1; i <= jumlahBaris; i++) {
             tbody.appendChild(renderBaris(i));
-            
             const tglSimpan = localStorage.getItem(`tgl_${i}`);
             if(tglSimpan) document.getElementById(`tgl_${i}`).value = tglSimpan;
-            
             const judulSimpan = localStorage.getItem(`judul_${i}`);
             if(judulSimpan) document.getElementById(`judul_${i}`).value = judulSimpan;
-            
             ['like', 'comen', 'share'].forEach(type => {
                 const savedImg = localStorage.getItem(`img_${type}_${i}`);
                 if(savedImg) {
@@ -263,7 +278,7 @@
                 const img = document.getElementById(imgId);
                 img.src = e.target.result;
                 img.style.display = 'block';
-                try { localStorage.setItem(imgId, e.target.result); } catch(err) { alert("Memori penuh"); }
+                try { localStorage.setItem(imgId, e.target.result); } catch(err) { alert("Memori penuh, gambar tidak tersimpan permanen."); }
             }
             reader.readAsDataURL(input.files[0]);
         }
@@ -278,10 +293,13 @@
     function simpanPDFAndroid() {
         const element = document.getElementById('capture-area');
         const toolbar = document.getElementById('toolbar');
+        const homeBtn = document.getElementById('home-btn');
         const labels = document.querySelectorAll('.label-eviden');
         const nama = document.getElementById('id_nama').value || "PPL";
         
+        // Sembunyikan elemen navigasi sebelum export
         toolbar.style.display = 'none';
+        homeBtn.style.display = 'none';
         labels.forEach(el => el.style.display = 'none');
 
         const semuaTanggal = document.querySelectorAll('input[type="date"]');
@@ -312,6 +330,7 @@
             });
 
             toolbar.style.display = 'flex';
+            homeBtn.style.display = 'flex';
             labels.forEach(el => el.style.display = '');
             alert("Laporan PDF berhasil disimpan!");
         });
@@ -321,4 +340,5 @@
     function tutupPopup() { document.getElementById('popup-reset').style.display = 'none'; }
     function konfirmasiReset() { localStorage.clear(); location.reload(); }
 </script>
+</body>
 </html>
