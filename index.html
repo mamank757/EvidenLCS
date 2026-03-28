@@ -181,6 +181,13 @@
     </div>
 
   <script>
+      function tanggalHariIniFormatFile() {
+    const today = new Date();
+    const hari = String(today.getDate()).padStart(2, '0');
+    const bulan = String(today.getMonth() + 1).padStart(2, '0');
+    const tahun = today.getFullYear();
+    return `${hari}-${bulan}-${tahun}`;
+}
       function tanggalHariIni() {
     const today = new Date();
     const tahun = today.getFullYear();
@@ -294,7 +301,7 @@
 
         const opt = {
             margin: [8, 10, 8, 10],
-            filename: `LCS_${nama}.pdf`,
+            filename: `LCS_${tanggalHariIniFormatFile()}_${nama}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
