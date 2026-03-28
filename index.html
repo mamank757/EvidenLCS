@@ -36,14 +36,13 @@
         table.tabel-data td { border: 1px solid black; padding: 4px; vertical-align: middle; font-size: 9pt; text-align: center; height: 190px; }
 
         .col-no { width: 30px; }
-        .col-tgl { width: 100px; } 
+        .col-tgl { width: 95px; } 
         .col-judul { width: auto; }
         .col-foto { width: 100px; }
 
         .input-tgl { width: 100%; border: none; text-align: center; font-size: 8.5pt; font-family: inherit; background: transparent; outline: none; }
         textarea.input-judul { width: 95%; height: 170px; border: none; resize: none; font-size: 9pt; font-family: inherit; padding: 5px; background: transparent; overflow: hidden; outline: none; }
 
-        /* PERBAIKAN: Container foto sekarang fit lebar kolom */
         .foto-container { 
             width: 100%; 
             height: 180px; 
@@ -58,11 +57,10 @@
         }
         .img-preview { width: 100%; height: 100%; object-fit: contain; display: none; background: #fff; }
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
-        .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; position: absolute; pointer-events: none; }
+        .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; position: absolute; pointer-events: none; z-index: 1; }
 
         @media screen and (max-width: 768px) {
             .kertas-a4 { width: 100% !important; padding: 10mm !important; min-height: auto; }
-            .col-tgl { width: 90px; }
         }
     </style>
 </head>
@@ -83,8 +81,7 @@
 
             <table class="identitas">
                 <tr>
-                    <td class="label-id">PERIODE</td>
-                    <td class="titik-id">:</td>
+                    <td class="label-id">PERIODE</td><td class="titik-id">:</td>
                     <td>
                         <select id="id_periode" onchange="simpanTeks('id_periode')">
                             <option value="">-- Pilih Bulan --</option>
@@ -213,70 +210,32 @@
         }
 
         function simpanPDFAndroid() {
-    const element = document.getElementById('capture-area');
-    const toolbar = document.getElementById('toolbar');
-    const labels = document.querySelectorAll('.label-eviden');
-    const tglInputs = document.querySelectorAll('.input-tgl');
-    const nama = document.getElementById('id_nama').value || "PPL";
-    
-    // 1. Ubah format tanggal ke Indo sebelum cetak
-    tglInputs.forEach(input => {
-        if(input.value && input.value.includes('-')) {
-            const [y, m, d] = input.value.split('-');
-            input.type = 'text';
-            input.value = `${d}-${m}-${y}`;
-        }
-    });
+            const element = document.getElementById('capture-area');
+            const toolbar = document.getElementById('toolbar');
+            const labels = document.querySelectorAll('.label-eviden');
+            const tglInputs = document.querySelectorAll('.input-tgl');
+            const nama = document.getElementById('id_nama').value || "PPL";
+            
+            tglInputs.forEach(input => {
+                if(input.value && input.value.includes('-')) {
+                    const [y, m, d] = input.value.split('-');
+                    input.type = 'text';
+                    input.value = `${d}-${m}-${y}`;
+                }
+            });
 
-    // 2. Sembunyikan toolbar total agar tidak memakan ruang (display none)
-    toolbar.style.display = 'none';
-    labels.forEach(el => el.style.visibility = 'hidden');
-
-    // 3. Pengaturan PDF yang lebih aman untuk HP
-    const opt = {
-        margin: [10, 10, 10, 10], // Margin keliling 10mm
-        filename: `LCS_${nama}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-            scale: 2, 
-            useCORS: true, 
-            scrollY: 0, // Paksa scroll ke atas agar tabel tidak terpotong
-            windowWidth: element.scrollWidth 
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    // 4. Proses cetak
-    html2pdf().set(opt).from(element).save().then(() => {
-        // Kembalikan ke semula setelah cetak
-        tglInputs.forEach(input => {
-            if(input.value.includes('-')) {
-                const [d, m, y] = input.value.split('-');
-                input.type = 'date';
-                input.value = `${y}-${m}-${d}`;
-            }
-        });
-        toolbar.style.display = 'flex';
-        labels.forEach(el => el.style.visibility = 'visible');
-        alert("PDF Berhasil Disimpan!");
-    }).catch(err => {
-        console.error(err);
-        toolbar.style.display = 'flex';
-    });
-}
-        toolbar.style.display = 'none';
+            toolbar.style.display = 'none';
             labels.forEach(el => el.style.visibility = 'hidden');
 
             const opt = {
-                margin: [8, 5, 8, 5],
+                margin: [10, 5, 10, 5],
                 filename: `LCS_${nama}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
+                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                // Kembalikan ke semula setelah cetak
                 tglInputs.forEach(input => {
                     if(input.value.includes('-')) {
                         const [d, m, y] = input.value.split('-');
@@ -287,6 +246,9 @@
                 toolbar.style.display = 'flex';
                 labels.forEach(el => el.style.visibility = 'visible');
                 alert("PDF Berhasil Disimpan!");
+            }).catch(err => {
+                toolbar.style.display = 'flex';
+                console.error(err);
             });
         }
 
