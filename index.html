@@ -55,30 +55,28 @@
         table.tabel-data { width: 100%; border-collapse: collapse; border: 1.5px solid black; table-layout: fixed; }
         table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 8.5pt; text-transform: uppercase; }
         
-        /* MODIFIKASI: Memperpanjang ukuran sel ke bawah */
+        /* UKURAN SEL DIPERPANJANG KE BAWAH */
         table.tabel-data td { 
             border: 1px solid black; 
             padding: 4px; 
             vertical-align: middle; 
             font-size: 9pt; 
             text-align: center; 
-            height: 180px; /* Tinggi baris minimal */
+            height: 190px; 
         }
 
-        /* Mencegah baris terpotong saat pindah halaman PDF */
         table.tabel-data tr { page-break-inside: avoid; }
 
         .col-no { width: 30px; }
-        .col-tgl { width: 105px; } 
+        .col-tgl { width: 110px; } 
         .col-judul { width: auto; }
         .col-foto { width: 95px; }
 
-        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8pt; font-family: inherit; background: transparent; padding: 0; }
+        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8.5pt; font-family: inherit; background: transparent; }
         
-        /* MODIFIKASI: Textarea lebih tinggi agar seimbang dengan baris */
         textarea.input-judul { 
             width: 95%; 
-            height: 160px; 
+            height: 170px; 
             border: none; 
             resize: none; 
             font-size: 9pt; 
@@ -88,10 +86,9 @@
             overflow: hidden; 
         }
 
-        /* MODIFIKASI: Ukuran kotak foto diperpanjang ke bawah */
         .foto-container { 
             width: 85px; 
-            height: 170px; 
+            height: 180px; 
             border: 1px dashed #ccc; 
             margin: auto; 
             position: relative; 
@@ -108,12 +105,9 @@
 
         @media screen and (max-width: 768px) {
             .kertas-a4 { width: 100% !important; padding: 12px !important; min-height: auto; }
-            .label-id { width: 130px; font-size: 10pt; }
-            .identitas input, .identitas select { font-size: 10pt; }
-            .foto-container { width: 85px; height: 160px; }
-            .col-tgl { width: 80px; }
-            .col-foto { width: 85px; }
-            th { font-size: 7.5pt !important; }
+            .label-id { width: 130px; }
+            .foto-container { width: 80px; height: 160px; }
+            .col-tgl { width: 100px; }
         }
 
         .no-export { display: none !important; }
@@ -148,21 +142,9 @@
                         </select>
                     </td>
                 </tr>
-                <tr>
-                    <td class="label-id">NAMA PENYULUH</td>
-                    <td class="titik-id">:</td>
-                    <td><input type="text" id="id_nama" placeholder="Cth. ABDUL RAHMAN, SP" oninput="simpanTeks('id_nama')"></td>
-                </tr>
-                <tr>
-                    <td class="label-id">NIP</td>
-                    <td class="titik-id">:</td>
-                    <td><input type="text" id="id_nip" placeholder="Cth. 199009202020121001" oninput="formatNIP(this); simpanTeks('id_nip')"></td>
-                </tr>
-                <tr>
-                    <td class="label-id">WILBIN/WKPP</td>
-                    <td class="titik-id">:</td>
-                    <td><input type="text" id="id_wilayah" placeholder="Cth. DESA MANURUNG" oninput="simpanTeks('id_wilayah')"></td>
-                </tr>
+                <tr><td class="label-id">NAMA PENYULUH</td><td class="titik-id">:</td><td><input type="text" id="id_nama" placeholder="Cth. ABDUL RAHMAN, SP" oninput="simpanTeks('id_nama')"></td></tr>
+                <tr><td class="label-id">NIP</td><td class="titik-id">:</td><td><input type="text" id="id_nip" placeholder="Cth. 199009202020121001" oninput="formatNIP(this); simpanTeks('id_nip')"></td></tr>
+                <tr><td class="label-id">WILBIN/WKPP</td><td class="titik-id">:</td><td><input type="text" id="id_wilayah" placeholder="Cth. DESA MANURUNG" oninput="simpanTeks('id_wilayah')"></td></tr>
             </table>
 
             <table class="tabel-data">
@@ -212,30 +194,25 @@
         }
 
         function muatDataLokal() {
-    tbody.innerHTML = "";
-    for (let i = 1; i <= jumlahBaris; i++) {
-        tbody.appendChild(renderBaris(i));
-        
-        const tglSimpan = localStorage.getItem(`tgl_${i}`);
-        if(tglSimpan) {
-            // Jika Bapak ingin tetap menggunakan input kalender, 
-            // biarkan value apa adanya karena input date butuh format YYYY-MM-DD
-            document.getElementById(`tgl_${i}`).value = tglSimpan;
-        }
-        
-        if(localStorage.getItem(`judul_${i}`)) document.getElementById(`judul_${i}`).value = localStorage.getItem(`judul_${i}`);
-        
-        ['like', 'comen', 'share'].forEach(type => {
-            const savedImg = localStorage.getItem(`img_${type}_${i}`);
-            if(savedImg) {
-                const imgEl = document.getElementById(`img_${type}_${i}`);
-                imgEl.src = savedImg;
-                imgEl.style.display = 'block';
+            tbody.innerHTML = "";
+            for (let i = 1; i <= jumlahBaris; i++) {
+                tbody.appendChild(renderBaris(i));
+                
+                const tglSimpan = localStorage.getItem(`tgl_${i}`);
+                if(tglSimpan) document.getElementById(`tgl_${i}`).value = tglSimpan;
+                
+                const judulSimpan = localStorage.getItem(`judul_${i}`);
+                if(judulSimpan) document.getElementById(`judul_${i}`).value = judulSimpan;
+                
+                ['like', 'comen', 'share'].forEach(type => {
+                    const savedImg = localStorage.getItem(`img_${type}_${i}`);
+                    if(savedImg) {
+                        const imgEl = document.getElementById(`img_${type}_${i}`);
+                        imgEl.src = savedImg;
+                        imgEl.style.display = 'block';
+                    }
+                });
             }
-        });
-    }
-    // ... sisa kode lainnya ...
-}
             ['id_periode', 'id_nama', 'id_nip', 'id_wilayah'].forEach(id => {
                 const val = localStorage.getItem(id);
                 if(val) document.getElementById(id).value = val;
@@ -257,7 +234,7 @@
                     const img = document.getElementById(imgId);
                     img.src = e.target.result;
                     img.style.display = 'block';
-                    try { localStorage.setItem(imgId, e.target.result); } catch(err) { console.log("Memory limit"); }
+                    try { localStorage.setItem(imgId, e.target.result); } catch(err) { alert("Memori penuh"); }
                 }
                 reader.readAsDataURL(input.files[0]);
             }
