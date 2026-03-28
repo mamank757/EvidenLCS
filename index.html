@@ -3,300 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#333" />
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Eviden LCS Digital - King Mamank</title>
+    <title>EVIDEN LCS DIGITAL - ANDROID READY</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Times New Roman', serif; margin: 0; padding: 10px; background: #000000; }
+        /* CSS ASLI DARI BLOGSPOT ANDA */
+        @page { size: A4; margin: 0; }
+        body { font-family: Arial, sans-serif; background: #000; margin: 0; padding: 0; }
+        .kertas-wrapper { padding: 20px; padding-top: 80px; }
+        .panel-kendali {
+            background: white; padding: 15px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin: 0 auto 20px auto; max-width: 210mm; position: fixed; top: 10px; left: 10px; right: 10px; z-index: 999;
+        }
+        button { padding: 10px; cursor: pointer; border-radius: 6px; border: none; color: white; font-weight: bold; }
+        .btn-print { background: #0b544e; flex: 2; margin-right: 5px; }
+        .btn-reset { background: #dc3545; }
+
+        .kertas-a4 { width: 210mm; min-height: 297mm; padding: 15mm; margin: 0 auto; background: white; box-sizing: border-box; }
+        .judul-laporan { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 20px; text-transform: uppercase; color:#000; }
         
-        .container { 
-            width: 100%; max-width: 1150px; margin: auto; background: white; 
-            padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
+        .identitas { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; color:#000; }
+        .identitas td { padding: 5px 0; border: none !important; }
+        .identitas input { width: 100%; border: none; border-bottom: 1px dashed #ccc; font-size: 11pt; padding: 2px; }
 
-        .header { text-align: center; border-bottom: 2px solid #000; margin-bottom: 15px; padding-bottom: 10px; }
-        .header h2, .header h3 { margin: 2px 0; text-transform: uppercase; font-size: 1.1rem; font-weight: bold; }
+        table.tabel-data { width: 100%; border-collapse: collapse; border: 2px solid black; }
+        table.tabel-data th { background-color: #666; color: white; padding: 10px; border: 1px solid black; }
+        table.tabel-data td { border: 1px solid black; padding: 5px; vertical-align: middle; }
 
-        .info-section { 
-            display: grid; 
-            grid-template-columns: 200px 20px 1fr; 
-            gap: 8px 0; 
-            margin-bottom: 20px; 
-            max-width: 800px; 
-            align-items: center;
-        }
-        .info-section label { font-weight: bold; font-size: 14px; }
-        .info-section span { font-weight: bold; text-align: center; }
-        
-        input[type="text"], input[type="date"], select, textarea { 
-            padding: 6px 10px; border: 1px solid #000; border-radius: 4px; width: 100%; font-family: inherit; font-size: 14px;
-        }
+        .judul-wrapper { position: relative; min-height: 100px; }
+        textarea.input-judul { width: 100%; height: 80px; border: none; resize: none; font-size: 10pt; }
 
-        .textarea-container { position: relative; width: 100%; }
-        textarea { resize: none; display: block; min-height: 100px; width: 100%; text-align: left; }
+        .foto-container { width: 100px; height: 150px; border: 1px dashed #ccc; margin: auto; position: relative; background: #f9f9f9; display: flex; align-items: center; justify-content: center; }
+        .img-preview { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
 
-        .textarea-actions {
-            position: absolute; bottom: 5px; right: 5px; display: flex; gap: 5px; z-index: 5;
-        }
-
-        .btn-action { padding: 4px 8px; color: white; border: none; border-radius: 3px; font-size: 10px; cursor: pointer; opacity: 0.8; }
-        .btn-paste { background: #00008B; }
-        .btn-clear { background: #8B0000; }
-        .btn-action:hover { opacity: 1; }
-
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th, td { border: 1px solid #000; padding: 6px; text-align: center; vertical-align: middle; }
-        th { background: #2ecc71 !important; color: #000 !important; font-size: 12px; text-transform: uppercase; font-weight: bold; }
-
-        .col-no { width: 35px; }
-        .col-date { width: 15%; }
-        .col-eviden { width: 19%; }
-
-        input[type="file"] { color: transparent; width: 85px; cursor: pointer; }
-        .preview-box { 
-            width: 120px; height: 140px; border: 1px dashed #bbb; margin: 5px auto; 
-            display: flex; align-items: center; justify-content: center; background: #fafafa; overflow: hidden;
-        }
-        .preview-box img { width: 100%; height: 100%; display: none; object-fit: cover; }
-
-        .controls { margin-top: 15px; display: flex; gap: 10px; }
-        .btn { padding: 12px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; color: white; transition: 0.3s; flex: 1; }
-        .btn-add { background: #27ae60; }
-        .btn-remove { background: #e74c3c; }
-        
-        .action-area { text-align: center; margin-top: 30px; }
-        .btn-print { background: #2c3e50; width: 100%; padding: 15px; font-size: 16px; color: white; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; }
-
-        .footer { margin-top: 30px; padding: 20px; background: transparent; text-align: center; font-size: 14px; color: #fff; }
-
-        /* Class khusus untuk menyembunyikan elemen saat cetak PDF */
         .no-export { display: none !important; }
 
         @media screen and (max-width: 768px) {
-            .info-section { grid-template-columns: 1fr; gap: 5px; }
-            .info-section > span { display: none; }
-            .preview-box { width: 100px; height: 120px; }
+            .kertas-a4 { width: 100%; padding: 10px; min-height: auto; }
+            .panel-kendali { position: static; margin-bottom: 10px; width: 100%; }
+            .td-foto { display: block; width: 100%; margin-bottom: 10px; }
+            .foto-container { width: 120px; height: 160px; }
         }
     </style>
 </head>
-<body>
+<body onload="muatDataLokal()">
 
-<div class="container" id="report-area">
-    <div class="header">
-        <h2>LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN</h2>
-        <h3>PENYULUH PERTANIAN - TAHUN 2026</h3>
+    <div class="panel-kendali no-print-area">
+        <button class="btn-print" onclick="simpanPDFAndroid()">💾 SIMPAN PDF (ANDROID)</button>
+        <button class="btn-reset" onclick="tampilkanPopup()">🔄 RESET</button>
     </div>
 
-    <div class="info-section">
-        <label>PERIODE</label> <span>:</span>
-        <select id="id_periode">
-            <option>BULAN MARET</option>
-            <option>BULAN APRIL</option><option>BULAN MEI</option><option>BULAN JUNI</option>
-            <option>BULAN JULI</option><option>BULAN AGUSTUS</option><option>BULAN SEPTEMBER</option>
-            <option>BULAN OKTOBER</option><option>BULAN NOVEMBER</option><option>BULAN DESEMBER</option>
-        </select>
-
-        <label>NAMA PENYULUH</label> <span>:</span> 
-        <input type="text" id="id_nama" list="list_nama" placeholder="Pilih Nama...">
-        <datalist id="list_nama">
-            <option value="ABDUL RAHMAN, SP">
-            <option value="ANDI LUTHFIAH, SP">
-            <option value="INDRA YULIANA, S.TP., M.Si.">
-            <option value="NURUL FAHMI, S.P.">
-            <option value="REZKI RAHAYU, S.P.">
-            <option value="RIZAL SMITH ANUGRAH SYAM, S.P.">
-            <option value="SUHADY HAMDAN, S.P.">
-            <option value="SULFIANITA, S.P.">
-            <option value="SURAHMAN, S.TP">
-        </datalist>
-        
-        <label>NIP</label> <span>:</span>
-        <input type="text" id="id_nip" placeholder="NIP otomatis...">
-
-        <label>WILBIN/WKPP</label> <span>:</span>
-        <input type="text" id="id_wilayah" placeholder="Wilayah otomatis...">
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th rowspan="2" class="col-no">No.</th>
-                <th rowspan="2" class="col-date">TANGGAL</th>
-                <th rowspan="2">JUDUL KONTEN</th>
-                <th colspan="3">EVIDEN</th>
-            </tr>
-            <tr>
-                <th class="col-eviden">LIKE</th>
-                <th class="col-eviden">COMMENT</th>
-                <th class="col-eviden">SHARE</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-    </table>
-
-    <div class="controls no-print-btn">
-        <button class="btn btn-remove" type="button" onclick="removeRow()">- Hapus Baris</button>
-        <button class="btn btn-add" type="button" onclick="addRow(true)">+ Tambah Baris</button>
-    </div>
-
-    <div class="action-area no-print-btn">
-        <button class="btn-print" type="button" onclick="cetakLaporan()">SIMPAN / DOWNLOAD PDF</button>
-    </div>
-</div>
-
-<footer class="footer">
-    copyright: King Mamank 2026 - PPL BPP Bola
-</footer>
-
-<script>
-// DATA PENYULUH
-const dataPenyuluh = {
-    "ABDUL RAHMAN, SP": { nip: "199009202020121001", wilayah: "DESA MANURUNG" },
-    "ANDI LUTHFIAH, SP": { nip: "199307162020122003", wilayah: "DESA MANNAGAE & DESA ASSORAJANG" },
-    "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001", wilayah: "DESA ALEWADENG" },
-    "NURUL FAHMI, S.P.": { nip: "198911142020122002", wilayah: "DESA BOTTOBENTENG & DESA RUMPIA" },
-    "REZKI RAHAYU, S.P.": { nip: "199507052020122003", wilayah: "KELURAHAN MAPPADAELO" },
-    "RIZAL SMITH ANUGRAH SYAM, S.P.": { nip: "199005152020121001", wilayah: "DESA WORONGNGE" },
-    "SUHADY HAMDAN, S.P.": { nip: "199202072020121001", wilayah: "DESA PASELLORENG & KELURAHAN GILIRENG" },
-    "SULFIANITA, S.P.": { nip: "199505082020122004", wilayah: "DESA SIMPURSIA" },
-    "SURAHMAN, S.TP": { nip: "199203122020121003", wilayah: "DESA BARANGMAMASE" }
-};
-
-const inputNama = document.getElementById("id_nama");
-const inputNip = document.getElementById("id_nip");
-const inputWilayah = document.getElementById("id_wilayah");
-
-inputNama.addEventListener("input", function(){
-    const data = dataPenyuluh[this.value];
-    if(data){
-        inputNip.value = data.nip;
-        inputWilayah.value = data.wilayah;
-    }
-});
-
-// FITUR SINKRONISASI JUDUL DARI GOOGLE SCRIPT
-let daftarJudulGlobal = []; 
-async function sinkronisasiJudul() {
-    const url = "https://script.google.com/macros/s/AKfycbzBRXwcAkJBPLvnvOdFuWKqag-XBq2U81kYBx3LyOKGCM0Sqx8WileVfvMa1T6BkEQH6A/exec";
-    try {
-        const response = await fetch(url + "?t=" + new Date().getTime());
-        const listJudul = await response.json();
-        daftarJudulGlobal = listJudul;
-        document.querySelectorAll('.judul-select').forEach(select => isiOpsiSelect(select));
-    } catch (e) {
-        console.error("Gagal sinkronisasi judul:", e);
-    }
-}
-
-function isiOpsiSelect(selectElement) {
-    const currentVal = selectElement.value;
-    selectElement.innerHTML = '<option value="">-- List Judul Konten --</option>';
-    daftarJudulGlobal.forEach(judul => {
-        const opt = document.createElement('option');
-        opt.value = judul;
-        opt.textContent = judul;
-        selectElement.appendChild(opt);
-    });
-    selectElement.value = currentVal;
-}
-
-// LOGIKA TABEL
-let count = 0;
-const tableBody = document.getElementById('tableBody');
-
-function addRow(showAlert = false) {
-    count++;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-        <td>${count}.</td>
-        <td><input type="date" value="${new Date().toISOString().split('T')[0]}"></td>
-        <td>
-            <div class="textarea-container">
-                <select class="no-print-btn judul-select" style="margin-bottom:5px; font-size:11px;" onchange="const ta=this.nextElementSibling; ta.value=this.value;">
-                    <option value="">Memuat judul...</option>
-                </select>
-                <textarea placeholder="Pilih judul atau ketik..."></textarea>
-                <div class="textarea-actions no-print-btn">
-                    <button type="button" class="btn-action btn-clear" onclick="this.parentNode.previousElementSibling.value=''">🗑️</button>
-                </div>
+    <div class="kertas-wrapper" id="area-laporan">
+        <div class="kertas-a4">
+            <div class="judul-laporan">
+                LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN<br>
+                PENYULUH PERTANIAN TAHUN 2026
             </div>
-        </td>
-        <td>
-            <input type="file" class="no-print-btn" accept="image/*" onchange="pv(this, 'l${count}')">
-            <div class="preview-box"><img id="l${count}"></div>
-        </td>
-        <td>
-            <input type="file" class="no-print-btn" accept="image/*" onchange="pv(this, 'c${count}')">
-            <div class="preview-box"><img id="c${count}"></div>
-        </td>
-        <td>
-            <input type="file" class="no-print-btn" accept="image/*" onchange="pv(this, 's${count}')">
-            <div class="preview-box"><img id="s${count}"></div>
-        </td>
-    `;
-    tableBody.appendChild(tr);
-    const newSelect = tr.querySelector('.judul-select');
-    isiOpsiSelect(newSelect);
-    if (showAlert) alert("Baris berhasil ditambahkan.");
-}
 
-function removeRow() {
-    if (count > 1) {
-        if(confirm("Hapus baris terakhir?")) {
-            tableBody.removeChild(tableBody.lastChild);
-            count--;
+            <table class="identitas">
+                <tr><td width="140">PERIODE</td><td width="20">:</td><td><input type="text" id="id_periode" oninput="simpanTeks('id_periode')"></td></tr>
+                <tr><td>Nama Penyuluh</td><td>:</td><td><input type="text" id="id_nama" oninput="simpanTeks('id_nama')"></td></tr>
+                <tr><td>NIP.</td><td>:</td><td><input type="text" id="id_nip" oninput="formatNIP(this); simpanTeks('id_nip')"></td></tr>
+                <tr><td>Wilayah Binaan</td><td>:</td><td><input type="text" id="id_wilayah" oninput="simpanTeks('id_wilayah')"></td></tr>
+            </table>
+
+            <table class="tabel-data">
+                <thead>
+                    <tr>
+                        <th width="100">TANGGAL</th>
+                        <th>Judul Konten</th>
+                        <th width="110">Like</th>
+                        <th width="110">Comen</th>
+                        <th width="110">Share</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="popup-reset" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background:white; padding:20px; border-radius:10px; text-align:center;">
+            <p>Bersihkan semua data?</p>
+            <button onclick="konfirmasiReset()" style="background:red; padding:10px;">Ya, Hapus</button>
+            <button onclick="tutupPopup()" style="background:gray; padding:10px;">Batal</button>
+        </div>
+    </div>
+
+    <script>
+        const tbody = document.getElementById('table-body');
+        let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 3;
+
+        function renderBaris(i) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" id="tgl_${i}" style="width:100%; border:none; text-align:center;" oninput="simpanTeks('tgl_${i}')"></td>
+                <td><textarea id="judul_${i}" class="input-judul" oninput="simpanTeks('judul_${i}')"></textarea></td>
+                <td><div class="foto-container"><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input no-print-area" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
+                <td><div class="foto-container"><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input no-print-area" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
+                <td><div class="foto-container"><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input no-print-area" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
+            `;
+            return tr;
         }
-    }
-}
 
-function pv(input, id) {
-    const file = input.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = document.getElementById(id);
-            img.src = e.target.result;
-            img.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    }
-}
+        // LOAD DATA
+        function muatDataLokal() {
+            tbody.innerHTML = "";
+            for (let i = 1; i <= jumlahBaris; i++) {
+                tbody.appendChild(renderBaris(i));
+                if(localStorage.getItem(`tgl_${i}`)) document.getElementById(`tgl_${i}`).value = localStorage.getItem(`tgl_${i}`);
+                if(localStorage.getItem(`judul_${i}`)) document.getElementById(`judul_${i}`).value = localStorage.getItem(`judul_${i}`);
+                
+                ['like', 'comen', 'share'].forEach(type => {
+                    const savedImg = localStorage.getItem(`img_${type}_${i}`);
+                    if(savedImg) {
+                        const imgEl = document.getElementById(`img_${type}_${i}`);
+                        imgEl.src = savedImg;
+                        imgEl.style.display = 'block';
+                    }
+                });
+            }
+            ['id_periode', 'id_nama', 'id_nip', 'id_wilayah'].forEach(id => {
+                if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
+            });
+        }
 
-// FUNGSI SIMPAN PDF
-function cetakLaporan() {
-    const element = document.getElementById("report-area");
-    const namaPPL = inputNama.value.trim() || "Penyuluh";
-    const tglFile = new Date().toISOString().split('T')[0];
+        function simpanTeks(id) { localStorage.setItem(id, document.getElementById(id).value); }
 
-    // Sembunyikan elemen yang tidak perlu di PDF
-    const noPrintElements = document.querySelectorAll('.no-print-btn');
-    noPrintElements.forEach(el => el.classList.add('no-export'));
+        function prosesGambar(input, imgId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(imgId);
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    localStorage.setItem(imgId, e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
-    const opt = {
-        margin:       [10, 5, 10, 5],
-        filename:     `LCS_${tglFile}_${namaPPL}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+        function formatNIP(input) {
+            let val = input.value.replace(/\D/g, '');
+            if (val.length > 18) val = val.substr(0, 18);
+            input.value = val.replace(/(\d{8})(\d{6})(\d{1})(\d{3})/, '$1 $2 $3 $4');
+        }
 
-    html2pdf().set(opt).from(element).save().then(() => {
-        // Munculkan kembali elemen setelah PDF selesai
-        noPrintElements.forEach(el => el.classList.remove('no-export'));
-        alert("PDF berhasil diunduh!");
-    });
-}
+        // FUNGSI PDF UNTUK ANDROID
+        function simpanPDFAndroid() {
+            const element = document.getElementById('area-laporan');
+            const nama = document.getElementById('id_nama').value || "Laporan";
+            
+            // Sembunyikan elemen input file dan tombol
+            document.querySelectorAll('.no-print-area').forEach(el => el.style.display = 'none');
 
-// INISIALISASI
-document.addEventListener('DOMContentLoaded', async () => {
-    await sinkronisasiJudul();
-    addRow(); addRow(); addRow();
-});
-</script>
+            const opt = {
+                margin: [10, 5, 10, 5],
+                filename: `LCS_${nama}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.querySelectorAll('.no-print-area').forEach(el => el.style.display = '');
+                alert("PDF berhasil disimpan!");
+            });
+        }
+
+        function tampilkanPopup() { document.getElementById('popup-reset').style.display = 'flex'; }
+        function tutupPopup() { document.getElementById('popup-reset').style.display = 'none'; }
+        function konfirmasiReset() { localStorage.clear(); location.reload(); }
+    </script>
 </body>
 </html>
