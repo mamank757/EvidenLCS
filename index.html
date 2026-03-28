@@ -1,177 +1,302 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LCS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#333" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Eviden LCS Digital - King Mamank</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-<style>
-* { box-sizing: border-box; }
-body { font-family: 'Times New Roman', serif; margin: 0; padding: 10px; background: #000; }
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Times New Roman', serif; margin: 0; padding: 10px; background: #000000; }
+        
+        .container { 
+            width: 100%; max-width: 1150px; margin: auto; background: white; 
+            padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
 
-.container {
-    max-width: 1150px; margin: auto; background: white;
-    padding: 30px; border-radius: 8px;
-}
+        .header { text-align: center; border-bottom: 2px solid #000; margin-bottom: 15px; padding-bottom: 10px; }
+        .header h2, .header h3 { margin: 2px 0; text-transform: uppercase; font-size: 1.1rem; font-weight: bold; }
 
-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-th, td { border: 1px solid #000; padding: 6px; }
+        .info-section { 
+            display: grid; 
+            grid-template-columns: 200px 20px 1fr; 
+            gap: 8px 0; 
+            margin-bottom: 20px; 
+            max-width: 800px; 
+            align-items: center;
+        }
+        .info-section label { font-weight: bold; font-size: 14px; }
+        .info-section span { font-weight: bold; text-align: center; }
+        
+        input[type="text"], input[type="date"], select, textarea { 
+            padding: 6px 10px; border: 1px solid #000; border-radius: 4px; width: 100%; font-family: inherit; font-size: 14px;
+        }
 
-th {
-    background: #2ecc71 !important;
-    color: #000 !important;
-}
+        .textarea-container { position: relative; width: 100%; }
+        textarea { resize: none; display: block; min-height: 100px; width: 100%; text-align: left; }
 
-.controls, .action-area { margin-top: 15px; }
+        .textarea-actions {
+            position: absolute; bottom: 5px; right: 5px; display: flex; gap: 5px; z-index: 5;
+        }
 
-/* ===== MOBILE ===== */
-@media screen and (max-width: 768px) {
-    table, thead, tbody, th, td, tr { display: block; }
-    thead { display: none; }
-}
+        .btn-action { padding: 4px 8px; color: white; border: none; border-radius: 3px; font-size: 10px; cursor: pointer; opacity: 0.8; }
+        .btn-paste { background: #00008B; }
+        .btn-clear { background: #8B0000; }
+        .btn-action:hover { opacity: 1; }
 
-/* ===== PRINT CSS ===== */
-@media print {
-    .controls, .action-area { display: none !important; }
-}
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th, td { border: 1px solid #000; padding: 6px; text-align: center; vertical-align: middle; }
+        th { background: #2ecc71 !important; color: #000 !important; font-size: 12px; text-transform: uppercase; font-weight: bold; }
 
-/* ===== FIX HTML2PDF ===== */
-.print-mode table { display: table !important; width: 100% !important; }
-.print-mode thead { display: table-header-group !important; }
-.print-mode tr { display: table-row !important; }
-.print-mode td, .print-mode th { display: table-cell !important; }
+        .col-no { width: 35px; }
+        .col-date { width: 15%; }
+        .col-eviden { width: 19%; }
 
-.print-mode .controls,
-.print-mode .action-area,
-.print-mode input[type="file"] {
-    display: none !important;
-}
-</style>
+        input[type="file"] { color: transparent; width: 85px; cursor: pointer; }
+        .preview-box { 
+            width: 120px; height: 140px; border: 1px dashed #bbb; margin: 5px auto; 
+            display: flex; align-items: center; justify-content: center; background: #fafafa; overflow: hidden;
+        }
+        .preview-box img { width: 100%; height: 100%; display: none; object-fit: cover; }
+
+        .controls { margin-top: 15px; display: flex; gap: 10px; }
+        .btn { padding: 12px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; color: white; transition: 0.3s; flex: 1; }
+        .btn-add { background: #27ae60; }
+        .btn-remove { background: #e74c3c; }
+        
+        .action-area { text-align: center; margin-top: 30px; }
+        .btn-print { background: #2c3e50; width: 100%; padding: 15px; font-size: 16px; color: white; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; }
+
+        .footer { margin-top: 30px; padding: 20px; background: transparent; text-align: center; font-size: 14px; color: #fff; }
+
+        /* Class khusus untuk menyembunyikan elemen saat cetak PDF */
+        .no-export { display: none !important; }
+
+        @media screen and (max-width: 768px) {
+            .info-section { grid-template-columns: 1fr; gap: 5px; }
+            .info-section > span { display: none; }
+            .preview-box { width: 100px; height: 120px; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="container" id="report-area">
+    <div class="header">
+        <h2>LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN</h2>
+        <h3>PENYULUH PERTANIAN - TAHUN 2026</h3>
+    </div>
 
-<h3 style="text-align:center;">LAPORAN LCS</h3>
+    <div class="info-section">
+        <label>PERIODE</label> <span>:</span>
+        <select id="id_periode">
+            <option>BULAN MARET</option>
+            <option>BULAN APRIL</option><option>BULAN MEI</option><option>BULAN JUNI</option>
+            <option>BULAN JULI</option><option>BULAN AGUSTUS</option><option>BULAN SEPTEMBER</option>
+            <option>BULAN OKTOBER</option><option>BULAN NOVEMBER</option><option>BULAN DESEMBER</option>
+        </select>
 
-<input type="text" id="id_nama" placeholder="Nama Penyuluh"><br><br>
+        <label>NAMA PENYULUH</label> <span>:</span> 
+        <input type="text" id="id_nama" list="list_nama" placeholder="Pilih Nama...">
+        <datalist id="list_nama">
+            <option value="ABDUL RAHMAN, SP">
+            <option value="ANDI LUTHFIAH, SP">
+            <option value="INDRA YULIANA, S.TP., M.Si.">
+            <option value="NURUL FAHMI, S.P.">
+            <option value="REZKI RAHAYU, S.P.">
+            <option value="RIZAL SMITH ANUGRAH SYAM, S.P.">
+            <option value="SUHADY HAMDAN, S.P.">
+            <option value="SULFIANITA, S.P.">
+            <option value="SURAHMAN, S.TP">
+        </datalist>
+        
+        <label>NIP</label> <span>:</span>
+        <input type="text" id="id_nip" placeholder="NIP otomatis...">
 
-<table>
-<thead>
-<tr>
-<th>No</th>
-<th>Tanggal</th>
-<th>Judul</th>
-<th>Like</th>
-<th>Comment</th>
-<th>Share</th>
-</tr>
-</thead>
+        <label>WILBIN/WKPP</label> <span>:</span>
+        <input type="text" id="id_wilayah" placeholder="Wilayah otomatis...">
+    </div>
 
-<tbody id="tableBody"></tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2" class="col-no">No.</th>
+                <th rowspan="2" class="col-date">TANGGAL</th>
+                <th rowspan="2">JUDUL KONTEN</th>
+                <th colspan="3">EVIDEN</th>
+            </tr>
+            <tr>
+                <th class="col-eviden">LIKE</th>
+                <th class="col-eviden">COMMENT</th>
+                <th class="col-eviden">SHARE</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
 
-<div class="controls">
-<button onclick="addRow()">+ Tambah</button>
-<button onclick="removeRow()">- Hapus</button>
+    <div class="controls no-print-btn">
+        <button class="btn btn-remove" type="button" onclick="removeRow()">- Hapus Baris</button>
+        <button class="btn btn-add" type="button" onclick="addRow(true)">+ Tambah Baris</button>
+    </div>
+
+    <div class="action-area no-print-btn">
+        <button class="btn-print" type="button" onclick="cetakLaporan()">SIMPAN / DOWNLOAD PDF</button>
+    </div>
 </div>
 
-<div class="action-area">
-<button onclick="cetakLaporan()">DOWNLOAD PDF</button>
-</div>
-
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<footer class="footer">
+    copyright: King Mamank 2026 - PPL BPP Bola
+</footer>
 
 <script>
-// ================= DATA =================
-let daftarJudulGlobal = [];
+// DATA PENYULUH
+const dataPenyuluh = {
+    "ABDUL RAHMAN, SP": { nip: "199009202020121001", wilayah: "DESA MANURUNG" },
+    "ANDI LUTHFIAH, SP": { nip: "199307162020122003", wilayah: "DESA MANNAGAE & DESA ASSORAJANG" },
+    "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001", wilayah: "DESA ALEWADENG" },
+    "NURUL FAHMI, S.P.": { nip: "198911142020122002", wilayah: "DESA BOTTOBENTENG & DESA RUMPIA" },
+    "REZKI RAHAYU, S.P.": { nip: "199507052020122003", wilayah: "KELURAHAN MAPPADAELO" },
+    "RIZAL SMITH ANUGRAH SYAM, S.P.": { nip: "199005152020121001", wilayah: "DESA WORONGNGE" },
+    "SUHADY HAMDAN, S.P.": { nip: "199202072020121001", wilayah: "DESA PASELLORENG & KELURAHAN GILIRENG" },
+    "SULFIANITA, S.P.": { nip: "199505082020122004", wilayah: "DESA SIMPURSIA" },
+    "SURAHMAN, S.TP": { nip: "199203122020121003", wilayah: "DESA BARANGMAMASE" }
+};
 
-// ================= SINKRONISASI =================
+const inputNama = document.getElementById("id_nama");
+const inputNip = document.getElementById("id_nip");
+const inputWilayah = document.getElementById("id_wilayah");
+
+inputNama.addEventListener("input", function(){
+    const data = dataPenyuluh[this.value];
+    if(data){
+        inputNip.value = data.nip;
+        inputWilayah.value = data.wilayah;
+    }
+});
+
+// FITUR SINKRONISASI JUDUL DARI GOOGLE SCRIPT
+let daftarJudulGlobal = []; 
 async function sinkronisasiJudul() {
+    const url = "https://script.google.com/macros/s/AKfycbzBRXwcAkJBPLvnvOdFuWKqag-XBq2U81kYBx3LyOKGCM0Sqx8WileVfvMa1T6BkEQH6A/exec";
     try {
-        const res = await fetch("https://script.google.com/macros/s/AKfycbzBRXwcAkJBPLvnvOdFuWKqag-XBq2U81kYBx3LyOKGCM0Sqx8WileVfvMa1T6BkEQH6A/exec");
-        daftarJudulGlobal = await res.json();
+        const response = await fetch(url + "?t=" + new Date().getTime());
+        const listJudul = await response.json();
+        daftarJudulGlobal = listJudul;
+        document.querySelectorAll('.judul-select').forEach(select => isiOpsiSelect(select));
     } catch (e) {
-        console.log("Fallback aktif");
-        daftarJudulGlobal = [
-            "Kegiatan Penyuluhan",
-            "Teknologi Pertanian",
-            "Pendampingan Petani"
-        ];
+        console.error("Gagal sinkronisasi judul:", e);
     }
 }
 
-// ================= TABLE =================
-let count = 0;
-const tableBody = document.getElementById("tableBody");
+function isiOpsiSelect(selectElement) {
+    const currentVal = selectElement.value;
+    selectElement.innerHTML = '<option value="">-- List Judul Konten --</option>';
+    daftarJudulGlobal.forEach(judul => {
+        const opt = document.createElement('option');
+        opt.value = judul;
+        opt.textContent = judul;
+        selectElement.appendChild(opt);
+    });
+    selectElement.value = currentVal;
+}
 
-function isiSelect(select){
-    select.innerHTML = '<option value="">Pilih Judul</option>';
-    daftarJudulGlobal.forEach(j=>{
-        let o = document.createElement("option");
-        o.value = j;
-        o.textContent = j;
-        select.appendChild(o);
+// LOGIKA TABEL
+let count = 0;
+const tableBody = document.getElementById('tableBody');
+
+function addRow(showAlert = false) {
+    count++;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${count}.</td>
+        <td><input type="date" value="${new Date().toISOString().split('T')[0]}"></td>
+        <td>
+            <div class="textarea-container">
+                <select class="no-print-btn judul-select" style="margin-bottom:5px; font-size:11px;" onchange="const ta=this.nextElementSibling; ta.value=this.value;">
+                    <option value="">Memuat judul...</option>
+                </select>
+                <textarea placeholder="Pilih judul atau ketik..."></textarea>
+                <div class="textarea-actions no-print-btn">
+                    <button type="button" class="btn-action btn-clear" onclick="this.parentNode.previousElementSibling.value=''">🗑️</button>
+                </div>
+            </div>
+        </td>
+        <td>
+            <input type="file" class="no-print-btn" accept="image/*" onchange="pv(this, 'l${count}')">
+            <div class="preview-box"><img id="l${count}"></div>
+        </td>
+        <td>
+            <input type="file" class="no-print-btn" accept="image/*" onchange="pv(this, 'c${count}')">
+            <div class="preview-box"><img id="c${count}"></div>
+        </td>
+        <td>
+            <input type="file" class="no-print-btn" accept="image/*" onchange="pv(this, 's${count}')">
+            <div class="preview-box"><img id="s${count}"></div>
+        </td>
+    `;
+    tableBody.appendChild(tr);
+    const newSelect = tr.querySelector('.judul-select');
+    isiOpsiSelect(newSelect);
+    if (showAlert) alert("Baris berhasil ditambahkan.");
+}
+
+function removeRow() {
+    if (count > 1) {
+        if(confirm("Hapus baris terakhir?")) {
+            tableBody.removeChild(tableBody.lastChild);
+            count--;
+        }
+    }
+}
+
+function pv(input, id) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.getElementById(id);
+            img.src = e.target.result;
+            img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// FUNGSI SIMPAN PDF
+function cetakLaporan() {
+    const element = document.getElementById("report-area");
+    const namaPPL = inputNama.value.trim() || "Penyuluh";
+    const tglFile = new Date().toISOString().split('T')[0];
+
+    // Sembunyikan elemen yang tidak perlu di PDF
+    const noPrintElements = document.querySelectorAll('.no-print-btn');
+    noPrintElements.forEach(el => el.classList.add('no-export'));
+
+    const opt = {
+        margin:       [10, 5, 10, 5],
+        filename:     `LCS_${tglFile}_${namaPPL}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        // Munculkan kembali elemen setelah PDF selesai
+        noPrintElements.forEach(el => el.classList.remove('no-export'));
+        alert("PDF berhasil diunduh!");
     });
 }
 
-function addRow(){
-    count++;
-    let tr = document.createElement("tr");
-
-    tr.innerHTML = `
-    <td>${count}</td>
-    <td><input type="date"></td>
-    <td>
-        <select onchange="this.nextElementSibling.value=this.value"></select>
-        <textarea></textarea>
-    </td>
-    <td><input type="file"></td>
-    <td><input type="file"></td>
-    <td><input type="file"></td>
-    `;
-
-    tableBody.appendChild(tr);
-    isiSelect(tr.querySelector("select"));
-}
-
-function removeRow(){
-    if(count>1){
-        tableBody.removeChild(tableBody.lastChild);
-        count--;
-    }
-}
-
-// ================= PDF =================
-function cetakLaporan(){
-    const element = document.querySelector(".container");
-
-    document.body.classList.add("print-mode");
-
-    const opt = {
-        margin: 0.5,
-        filename: "LCS.pdf",
-        html2canvas: { scale: 3 },
-        jsPDF: { unit: 'cm', format: 'a4' }
-    };
-
-    setTimeout(()=>{
-        html2pdf().set(opt).from(element).save().then(()=>{
-            document.body.classList.remove("print-mode");
-        });
-    },500);
-}
-
-// ================= INIT =================
-document.addEventListener("DOMContentLoaded", async ()=>{
+// INISIALISASI
+document.addEventListener('DOMContentLoaded', async () => {
     await sinkronisasiJudul();
-    addRow();
-    addRow();
+    addRow(); addRow(); addRow();
 });
 </script>
-
 </body>
 </html>
