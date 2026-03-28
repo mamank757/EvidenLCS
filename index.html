@@ -7,11 +7,10 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-   <style>
+    <style>
         * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #000; margin: 0; padding: 0; }
         
-        /* PANEL KENDALI */
         .panel-kendali {
             background: #ffffff; padding: 10px; display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%;
@@ -23,7 +22,16 @@
         .btn-reset { background: #dc3545; flex: 1; }
 
         .kertas-wrapper { padding: 10px; display: flex; justify-content: center; }
-        .kertas-a4 { width: 210mm; min-height: 297mm; padding: 10mm 15mm; background: white; box-sizing: border-box; }
+        
+        /* KERTAS A4 */
+        .kertas-a4 { 
+            width: 210mm; 
+            min-height: 297mm; 
+            padding: 10mm 12mm; 
+            background: white; 
+            box-sizing: border-box; 
+        }
+
         .judul-laporan { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 25px; text-transform: uppercase; color:#000; line-height: 1.2; }
         
         .identitas { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; color:#000; }
@@ -32,63 +40,74 @@
         .titik-id { width: 20px; text-align: center; font-weight: bold; }
         .identitas input, .identitas select { width: 100%; border: none; font-size: 11pt; padding: 2px; background: transparent; outline: none; color: black; }
 
-        /* TABEL UTAMA */
-        table.tabel-data { width: 100%; border-collapse: collapse; border: 1.5px solid black; table-layout: fixed; }
+        /* TABEL UTAMA - Kunci Ukuran Agar Tidak Berubah di PDF */
+        table.tabel-data { 
+            width: 100%; 
+            border-collapse: collapse; 
+            border: 1.5px solid black; 
+            table-layout: fixed; /* Kunci layout agar lebar kolom paten */
+        }
+        
         table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 8.5pt; text-transform: uppercase; }
-        table.tabel-data td { border: 1px solid black; padding: 4px; vertical-align: middle; font-size: 9pt; text-align: center; height: 190px; }
-
-        /* UKURAN KOLOM STANDAR (A4) */
-        .col-no { width: 30px; }
-        .col-tgl { width: 110px; } 
-        .col-judul { width: auto; }
-        .col-foto { width: 95px; }
-
-        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8.5pt; background: transparent; }
-        textarea.input-judul { width: 100%; height: 170px; border: none; resize: none; font-size: 9pt; padding: 5px; background: transparent; overflow: hidden; }
-
-        .foto-container { width: 85px; height: 180px; border: 1px dashed #ccc; margin: auto; position: relative; background: #fafafa; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .img-preview { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
-        .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; }
-
-        /* PERBAIKAN KHUSUS LAYAR HP */
-        @media screen and (max-width: 768px) {
-            .kertas-a4 { width: 100% !important; padding: 8px !important; min-height: auto; }
-            .label-id { width: 100px; font-size: 9pt; }
-            
-            /* Lepaskan table-layout fixed agar kolom bisa fleksibel */
-            table.tabel-data { table-layout: auto !important; }
-            
-            /* Menyempitkan No dan Tanggal secara maksimal */
-            .col-no { width: 25px !important; }
-            .col-tgl { width: 40px !important; } 
-            
-            /* Berikan ruang lebih untuk foto */
-            .col-foto { width: 55px !important; } 
-            
-            th { font-size: 6pt !important; padding: 4px 1px !important; }
-            
-            /* Foto dibuat kecil dan proporsional agar 3 kolom muat berjejer */
-            .foto-container { width: 50px; height: 80px; }
-            .label-foto { font-size: 5pt; }
-            
-            table.tabel-data td { height: 100px; padding: 2px; }
-            
-            /* Judul konten mengikuti sisa ruang */
-            textarea.input-judul { 
-                height: 90px; 
-                font-size: 8pt; 
-                padding: 2px;
-            }
-            
-            /* Input tanggal di HP diperkecil ukurannya */
-            .input-tgl { font-size: 7pt; }
+        
+        table.tabel-data td { 
+            border: 1px solid black; 
+            padding: 4px; 
+            vertical-align: middle; 
+            font-size: 9pt; 
+            text-align: center; 
+            height: 190px; /* Jaga tinggi baris tetap melar ke bawah */
         }
 
-        .no-export { display: none !important; }
+        /* KUNCI LEBAR KOLOM (BERLAKU DI LAYAR & PDF) */
+        .col-no { width: 35px; }
+        .col-tgl { width: 85px; }  /* Kolom Tanggal Menyempit */
+        .col-judul { width: auto; } /* Judul Mengambil Sisa Ruang Luas */
+        .col-foto { width: 90px; }  /* Kolom Foto Seimbang */
+
+        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8pt; background: transparent; }
+        
+        textarea.input-judul { 
+            width: 100%; 
+            height: 170px; 
+            border: none; 
+            resize: none; 
+            font-size: 9pt; 
+            padding: 5px; 
+            background: transparent; 
+            overflow: hidden; 
+        }
+
+        .foto-container { 
+            width: 80px; 
+            height: 170px; 
+            border: 1px dashed #ccc; 
+            margin: auto; 
+            position: relative; 
+            background: #fafafa; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+        }
+        
+        .img-preview { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
+        .label-foto { font-size: 6pt; color: #888; text-align: center; font-weight: bold; }
+
+        /* KHUSUS PENYESUAIAN SAAT DILIHAT DI HP (TIDAK MERUSAK PDF) */
+        @media screen and (max-width: 768px) {
+            .kertas-a4 { width: 100% !important; padding: 10px !important; min-height: auto; }
+            .label-id { width: 120px; font-size: 10pt; }
+            .col-tgl { width: 75px; } 
+            .col-foto { width: 75px; }
+            .foto-container { width: 70px; height: 120px; }
+            table.tabel-data td { height: 140px; }
+            textarea.input-judul { height: 120px; }
+        }
     </style>
 </head>
-<body>
+<body onload="muatDataLokal()">
 
     <div class="panel-kendali" id="toolbar">
         <button class="btn-add" onclick="tambahBaris()">+ BARIS</button>
@@ -124,8 +143,7 @@
                         <th class="col-foto">SHARE</th>
                     </tr>
                 </thead>
-                <tbody id="table-body">
-                    </tbody>
+                <tbody id="table-body"></tbody>
             </table>
         </div>
     </div>
@@ -138,10 +156,7 @@
     </div>
 
     <script>
-        // Gunakan fungsi ini agar script berjalan tepat setelah HTML siap
-        window.addEventListener('DOMContentLoaded', (event) => {
-            muatDataLokal();
-        });
+        const tbody = document.getElementById('table-body');
 
         function renderBaris(i) {
             const tr = document.createElement('tr');
@@ -157,27 +172,22 @@
         }
 
         function muatDataLokal() {
-            const tbody = document.getElementById('table-body');
-            if(!tbody) return; // Pastikan element ada
-            
             tbody.innerHTML = "";
             let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 2;
-
             for (let i = 1; i <= jumlahBaris; i++) {
                 tbody.appendChild(renderBaris(i));
-                
                 const tgl = localStorage.getItem(`tgl_${i}`);
                 if(tgl) document.getElementById(`tgl_${i}`).value = tgl;
-                
                 const judul = localStorage.getItem(`judul_${i}`);
                 if(judul) document.getElementById(`judul_${i}`).value = judul;
-                
                 ['like', 'comen', 'share'].forEach(type => {
                     const savedImg = localStorage.getItem(`img_${type}_${i}`);
                     if(savedImg) {
                         const imgEl = document.getElementById(`img_${type}_${i}`);
                         imgEl.src = savedImg;
                         imgEl.style.display = 'block';
+                        const labelEl = imgEl.previousElementSibling;
+                        if(labelEl) labelEl.style.display = 'none';
                     }
                 });
             }
@@ -188,7 +198,6 @@
         }
 
         function tambahBaris() {
-            const tbody = document.getElementById('table-body');
             let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 2;
             jumlahBaris++;
             localStorage.setItem('jumlahBaris', jumlahBaris);
@@ -204,6 +213,7 @@
                     const img = document.getElementById(imgId);
                     img.src = e.target.result;
                     img.style.display = 'block';
+                    img.previousElementSibling.style.display = 'none';
                     try { localStorage.setItem(imgId, e.target.result); } catch(err) { alert("Memori penuh"); }
                 }
                 reader.readAsDataURL(input.files[0]);
@@ -226,16 +236,23 @@
             labels.forEach(el => el.style.display = 'none');
 
             const opt = {
-                margin: [8, 5, 8, 5],
+                margin: [5, 5, 5, 5],
                 filename: `LCS_${nama}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
                 toolbar.style.display = 'flex';
-                labels.forEach(el => el.style.display = '');
+                // Hanya munculkan kembali label jika tidak ada gambarnya
+                document.querySelectorAll('.foto-container').forEach(container => {
+                    const img = container.querySelector('img');
+                    const label = container.querySelector('.label-foto');
+                    if (img.style.display === 'none' || !img.src) {
+                        label.style.display = 'block';
+                    }
+                });
                 alert("Laporan PDF berhasil disimpan!");
             });
         }
