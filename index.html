@@ -111,12 +111,20 @@
 
         table.tabel-data tr { page-break-inside: avoid; }
 
-        .col-no { width: 30px; }
-        .col-tgl { width: 130px; }
-        .col-judul { width: auto; }
-        .col-foto { width: 90px; }
+       .col-no    { width: 40px; }
+.col-tgl   { width: 140px; }
+.col-foto  { width: 90px; }
+.col-judul { width: auto; }
 
-        .input-tgl { width: 100%; border: none; text-align: center; font-size: 10pt; font-family: inherit; background: transparent; }
+        .input-tgl { 
+  width: 100%; 
+  min-width: 0;   /* 🔥 ini kunci utama */
+  border: none; 
+  text-align: center; 
+  font-size: 10pt; 
+  font-family: inherit; 
+  background: transparent; 
+}
         
         textarea.input-judul { 
             width: 95%; 
