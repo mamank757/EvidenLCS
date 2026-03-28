@@ -8,6 +8,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
+    @media print {
+  body {
+    background: white !important;
+  }
+
+  .kertas-a4 {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    padding: 10mm 15mm !important;
+  }
+
+  .col-tgl {
+    width: 140px !important;
+  }
+
+  .col-no { width: 130px !important; }
+  .col-foto { width: 90px !important; }
+
+  table {
+    table-layout: fixed !important;
+  }
+}
         * { box-sizing: border-box; }
         body { font-family: 'Times New Roman', Times, serif; background: #000; margin: 0; padding: 0; }
         
@@ -90,9 +112,9 @@
         table.tabel-data tr { page-break-inside: avoid; }
 
         .col-no { width: 30px; }
-        .col-tgl { width: 180px; }
+        .col-tgl { width: 130px; }
         .col-judul { width: auto; }
-        .col-foto { width: 100px; }
+        .col-foto { width: 90px; }
 
         .input-tgl { width: 100%; border: none; text-align: center; font-size: 10pt; font-family: inherit; background: transparent; }
         
@@ -125,15 +147,29 @@
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
         .label-foto { font-size: 8pt; color: #888; text-align: center; font-weight: bold; }
 
-     @media screen and (max-width: 768px)
-        { .kertas-a4 { width: 100% !important; padding: 10px !important; min-height: auto; }
-          .label-id { width: 110px; font-size: 8pt; }
-          .col-tgl { width: 75px; }
-          .col-foto { width: auto; } th { font-size: 8pt !important; }
-          .foto-container { width: 100%; height: 110px; } table.tabel-data td { height: 130px; }
-          textarea.input-judul { height: 110px; font-size: 9pt; } 
-          .btn-home { bottom: 20px; width: 45px; height: 45px; font-size: 20px; }
-        }
+    @media screen and (max-width: 768px)
+{
+  .kertas-a4 { 
+    width: 210mm !important;   /* ✅ paksa tetap A4 */
+    padding: 10mm 15mm !important;
+    min-height: 297mm;
+  }
+
+  .label-id { width: 110px; font-size: 8pt; }
+
+  /* ❗ kolom tanggal JANGAN diubah lagi */
+  /* biarkan tetap 180px */
+
+  .col-foto { width: auto; } 
+  th { font-size: 8pt !important; }
+
+  .foto-container { width: 100%; height: 110px; } 
+  table.tabel-data td { height: 130px; }
+
+  textarea.input-judul { height: 110px; font-size: 9pt; } 
+
+  .btn-home { bottom: 20px; width: 45px; height: 45px; font-size: 20px; }
+}
 
     .no-export { display: none !important; }
     </style>
