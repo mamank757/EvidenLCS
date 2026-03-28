@@ -11,6 +11,7 @@
         * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #000; margin: 0; padding: 0; }
         
+        /* PANEL KENDALI */
         .panel-kendali {
             background: #ffffff; padding: 10px; display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%;
@@ -25,35 +26,34 @@
         .kertas-a4 { width: 210mm; min-height: 297mm; padding: 10mm 15mm; background: white; box-sizing: border-box; }
 
         .judul-laporan { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 25px; text-transform: uppercase; color:#000; line-height: 1.2; }
-        .identitas { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; color:#000; }
+        
+        /* PERBAIKAN IDENTITAS: Agar Sejajar & Tidak Melebar */
+        .identitas { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; color:#000; table-layout: fixed; }
         .identitas td { padding: 5px 0; vertical-align: middle; border: none !important; }
-        .label-id { width: 180px; font-weight: bold; white-space: nowrap; }
+        .label-id { width: 150px; font-weight: bold; white-space: nowrap; }
         .titik-id { width: 20px; text-align: center; font-weight: bold; }
-        .identitas input, .identitas select { width: 100%; border: none; font-size: 11pt; padding: 2px; font-family: inherit; background: transparent; outline: none; color: black; }
+        .identitas input, .identitas select { 
+            width: 100%; border: none; border-bottom: 1px solid #eee; font-size: 11pt; padding: 2px; 
+            font-family: inherit; background: transparent; outline: none; color: black; 
+        }
 
+        /* TABEL DATA */
         table.tabel-data { width: 100%; border-collapse: collapse; border: 1.5px solid black; table-layout: fixed; }
         table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 8.5pt; text-transform: uppercase; }
         table.tabel-data td { border: 1px solid black; padding: 4px; vertical-align: middle; font-size: 9pt; text-align: center; height: 190px; }
 
-        .col-no { width: 28px; }
-        .col-tgl { width: 75px; } 
-        .col-judul { width: 95px; }
-        .col-foto { width: 95px; }
+        .col-no { width: 30px; }
+        .col-tgl { width: 100px; } 
+        .col-judul { width: auto; }
+        .col-foto { width: 100px; }
 
         .input-tgl { width: 100%; border: none; text-align: center; font-size: 8.5pt; font-family: inherit; background: transparent; outline: none; }
         textarea.input-judul { width: 95%; height: 170px; border: none; resize: none; font-size: 9pt; font-family: inherit; padding: 5px; background: transparent; overflow: hidden; outline: none; }
 
+        /* FOTO EVIDEN: Fit ke Lebar Kolom */
         .foto-container { 
-            width: 100%; 
-            height: 180px; 
-            border: 1px dashed #ccc; 
-            margin: auto; 
-            position: relative; 
-            background: #fafafa; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            overflow: hidden; 
+            width: 100%; height: 180px; border: 1px dashed #ccc; margin: auto; position: relative; 
+            background: #fafafa; display: flex; align-items: center; justify-content: center; overflow: hidden; 
         }
         .img-preview { width: 100%; height: 100%; object-fit: contain; display: none; background: #fff; }
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
@@ -92,9 +92,9 @@
                         </select>
                     </td>
                 </tr>
-                <tr><td class="label-id">NAMA PENYULUH</td><td class="titik-id">:</td><td><input type="text" id="id_nama" placeholder="Cth. ABDUL RAHMAN, SP" oninput="simpanTeks('id_nama')"></td></tr>
-                <tr><td class="label-id">NIP</td><td class="titik-id">:</td><td><input type="text" id="id_nip" placeholder="Cth. 199009202020121001" oninput="formatNIP(this); simpanTeks('id_nip')"></td></tr>
-                <tr><td class="label-id">WILBIN/WKPP</td><td class="titik-id">:</td><td><input type="text" id="id_wilayah" placeholder="Cth. DESA MANURUNG" oninput="simpanTeks('id_wilayah')"></td></tr>
+                <tr><td class="label-id">NAMA PENYULUH</td><td class="titik-id">:</td><td><input type="text" id="id_nama" placeholder="Ketik Nama..." oninput="simpanTeks('id_nama')"></td></tr>
+                <tr><td class="label-id">NIP</td><td class="titik-id">:</td><td><input type="text" id="id_nip" placeholder="Ketik NIP..." oninput="formatNIP(this); simpanTeks('id_nip')"></td></tr>
+                <tr><td class="label-id">WILBIN/WKPP</td><td class="titik-id">:</td><td><input type="text" id="id_wilayah" placeholder="Ketik Wilayah..." oninput="simpanTeks('id_wilayah')"></td></tr>
             </table>
 
             <table class="tabel-data">
@@ -216,6 +216,7 @@
             const tglInputs = document.querySelectorAll('.input-tgl');
             const nama = document.getElementById('id_nama').value || "PPL";
             
+            // Format Indo DD-MM-YYYY sebelum cetak
             tglInputs.forEach(input => {
                 if(input.value && input.value.includes('-')) {
                     const [y, m, d] = input.value.split('-');
@@ -236,6 +237,7 @@
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
+                // Kembalikan ke Date Picker
                 tglInputs.forEach(input => {
                     if(input.value.includes('-')) {
                         const [d, m, y] = input.value.split('-');
