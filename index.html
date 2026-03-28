@@ -213,7 +213,7 @@
     return `${tahun}-${bulan}-${hari}`; // format wajib untuk input date
 }
     const tbody = document.getElementById('table-body');
-    let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 2;
+    let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 3;
 
     // ✅ TAMBAHAN: fungsi format tanggal
     function formatTanggalIndonesia(tgl) {
