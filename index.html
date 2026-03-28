@@ -23,11 +23,19 @@
         .btn-reset { background: #dc3545; flex: 1; }
 
         .kertas-wrapper { padding: 10px; display: flex; justify-content: center; }
-        .kertas-a4 { width: 210mm; min-height: 297mm; padding: 10mm 15mm; background: white; box-sizing: border-box; }
+        
+        /* KERTAS A4: Set Margin 2cm (20mm) Kiri, Kanan, Bawah */
+        .kertas-a4 { 
+            width: 210mm; 
+            min-height: 297mm; 
+            padding: 10mm 20mm 20mm 20mm; 
+            background: white; 
+            box-sizing: border-box; 
+        }
 
         .judul-laporan { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 25px; text-transform: uppercase; color:#000; line-height: 1.2; }
         
-        /* IDENTITAS: Garis Bawah Dihilangkan (Polos) */
+        /* IDENTITAS: Sejajar & Tanpa Garis Bawah */
         .identitas { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; color:#000; table-layout: fixed; }
         .identitas td { padding: 5px 0; vertical-align: middle; border: none !important; }
         .label-id { width: 150px; font-weight: bold; white-space: nowrap; }
@@ -59,41 +67,27 @@
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
         .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; position: absolute; pointer-events: none; z-index: 1; }
 
-    /* ... (Kode CSS bagian atas tetap sama) ... */
+        /* 1. TAMPILAN MONITOR HP (Hanya di layar HP) */
+        @media screen and (max-width: 768px) {
+            .kertas-a4 { width: 100% !important; padding: 10mm 5mm !important; }
+            .col-no { width: 25px !important; }
+            .col-tgl { width: 75px !important; } 
+            .col-judul { width: auto !important; }
+            .col-foto { width: 85px !important; }
+            table.tabel-data td { height: 160px; }
+            .foto-container { height: 150px; }
+            .label-id { width: 120px; }
+        }
 
-    /* 1. TAMPILAN MONITOR HP (Hanya di layar HP) */
-    @media screen and (max-width: 768px) {
-        .kertas-a4 { width: 100% !important; padding: 10mm 5mm !important; }
-        .col-no { width: 25px !important; }
-        .col-tgl { width: 75px !important; } /* Sempit di layar HP */
-        .col-judul { width: auto !important; }
-        .col-foto { width: 85px !important; }
-        table.tabel-data td { height: 160px; }
-        .foto-container { height: 150px; }
-    }
-
-    /* 2. TAMPILAN HASIL CETAK PDF (Media Print) */
-    /* Ini yang akan dibaca oleh html2pdf saat proses download */
-    @media print {
-        /* Lebarkan kolom tanggal di PDF agar lebih lega */
-        .col-tgl { width: 115px !important; } 
-        
-        /* Kecilkan kolom nomor karena hanya butuh sedikit ruang */
-        .col-no { width: 30px !important; }
-        
-        /* Kolom judul akan otomatis menyesuaikan sisa lebar kertas */
-        .col-judul { width: auto !important; }
-        
-        /* Kolom foto (Like, Comment, Share) dibuat standar 95px agar pas di A4 */
-        .col-foto { width: 95px !important; }
-        
-        /* Pastikan tinggi baris kembali ke standar laporan (190px) */
-        table.tabel-data td { height: 190px !important; }
-        .foto-container { height: 180px !important; }
-        
-        /* Hilangkan garis bawah input agar hasil PDF bersih/formal */
-        .identitas input, .identitas select { border-bottom: none !important; }
-    }
+        /* 2. TAMPILAN HASIL CETAK PDF (Media Print) */
+        @media print {
+            .col-tgl { width: 115px !important; } 
+            .col-no { width: 30px !important; }
+            .col-judul { width: auto !important; }
+            .col-foto { width: 95px !important; }
+            table.tabel-data td { height: 190px !important; }
+            .foto-container { height: 180px !important; }
+        }
     </style>
 </head>
 <body onload="muatDataLokal()">
@@ -124,9 +118,9 @@
                         </select>
                     </td>
                 </tr>
-                <tr><td class="label-id">NAMA PENYULUH</td><td class="titik-id">:</td><td><input type="text" id="id_nama" placeholder="Cth. ABDUL RAHMAN, SP" oninput="simpanTeks('id_nama')"></td></tr>
-                <tr><td class="label-id">NIP</td><td class="titik-id">:</td><td><input type="text" id="id_nip" placeholder="Cth. 199009202020121001" oninput="formatNIP(this); simpanTeks('id_nip')"></td></tr>
-                <tr><td class="label-id">WILBIN/WKPP</td><td class="titik-id">:</td><td><input type="text" id="id_wilayah" placeholder="Cth. DESA MANURUNG" oninput="simpanTeks('id_wilayah')"></td></tr>
+                <tr><td class="label-id">NAMA PENYULUH</td><td class="titik-id">:</td><td><input type="text" id="id_nama" placeholder="Ketik Nama..." oninput="simpanTeks('id_nama')"></td></tr>
+                <tr><td class="label-id">NIP</td><td class="titik-id">:</td><td><input type="text" id="id_nip" placeholder="Ketik NIP..." oninput="formatNIP(this); simpanTeks('id_nip')"></td></tr>
+                <tr><td class="label-id">WILBIN/WKPP</td><td class="titik-id">:</td><td><input type="text" id="id_wilayah" placeholder="Ketik Wilayah..." oninput="simpanTeks('id_wilayah')"></td></tr>
             </table>
 
             <table class="tabel-data">
@@ -260,7 +254,7 @@
             labels.forEach(el => el.style.visibility = 'hidden');
 
             const opt = {
-                margin: [10, 5, 10, 5],
+                margin: [10, 20, 20, 20], // 2cm Margin Kiri, Kanan, Bawah
                 filename: `LCS_${nama}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
