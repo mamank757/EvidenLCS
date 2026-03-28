@@ -11,7 +11,7 @@
         * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #000; margin: 0; padding: 0; }
         
-        /* PANEL KENDALI - DIPASTIKAN MUNCUL */
+        /* PANEL KENDALI */
         .panel-kendali {
             background: #ffffff; 
             padding: 10px; 
@@ -44,7 +44,9 @@
         
         .identitas { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; color:#000; }
         .identitas td { padding: 5px 0; vertical-align: middle; border: none !important; }
-        .label-id { width: 150px; font-weight: bold; }
+        
+        /* PERBAIKAN 1: Lebar Label diperluas agar tidak wrap */
+        .label-id { width: 180px; font-weight: bold; white-space: nowrap; }
         .titik-id { width: 20px; text-align: center; font-weight: bold; }
         
         .identitas input, .identitas select { 
@@ -52,31 +54,34 @@
         }
 
         table.tabel-data { width: 100%; border-collapse: collapse; border: 1.5px solid black; table-layout: fixed; }
-        table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 9pt; text-transform: uppercase; }
+        table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 8.5pt; text-transform: uppercase; }
         table.tabel-data td { border: 1px solid black; padding: 4px; vertical-align: middle; font-size: 9pt; text-align: center; }
 
-        .col-no { width: 35px; }
-        .col-tgl { width: 125px; }
+        /* PERBAIKAN 2: Penyeimbangan Kolom */
+        .col-no { width: 30px; }
+        .col-tgl { width: 105px; } /* Dipersempit agar Judul Konten lebih luas */
         .col-judul { width: auto; }
-        .col-foto { width: 105px; }
+        .col-foto { width: 95px; }
 
-        .input-tgl { width: 100%; border: none; text-align: center; font-size: 9pt; font-family: inherit; background: transparent; }
+        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8pt; font-family: inherit; background: transparent; padding: 0; }
         textarea.input-judul { width: 100%; height: 110px; border: none; resize: none; font-size: 9pt; font-family: inherit; padding: 5px; background: transparent; overflow: hidden; }
 
-        .foto-container { width: 95px; height: 150px; border: 1px dashed #ccc; margin: auto; position: relative; background: #fafafa; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .foto-container { width: 85px; height: 140px; border: 1px dashed #ccc; margin: auto; position: relative; background: #fafafa; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .img-preview { width: 100%; height: 100%; object-fit: cover; display: none; }
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
-        .label-foto { font-size: 8pt; color: #888; text-align: center; }
+        .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; }
 
         @media screen and (max-width: 768px) {
-            .kertas-a4 { width: 100% !important; padding: 15px !important; min-height: auto; }
-            .label-id { width: 100px; }
-            .foto-container { width: 85px; height: 130px; }
-            .col-tgl { width: 110px; }
+            .kertas-a4 { width: 100% !important; padding: 12px !important; min-height: auto; }
+            .label-id { width: 130px; font-size: 10pt; }
+            .identitas input, .identitas select { font-size: 10pt; }
+            .foto-container { width: 75px; height: 120px; }
+            .col-tgl { width: 95px; }
+            .col-foto { width: 85px; }
+            th { font-size: 7.5pt !important; }
         }
 
-        /* Class khusus menyembunyikan elemen saat proses PDF */
-        .hide-on-pdf { display: none !important; }
+        .no-export { display: none !important; }
     </style>
 </head>
 <body onload="muatDataLokal()">
@@ -226,7 +231,6 @@
             const labels = document.querySelectorAll('.label-eviden');
             const nama = document.getElementById('id_nama').value || "PPL";
             
-            // SEMBUNYIKAN PANEL DAN LABEL SEBELUM CETAK
             toolbar.style.display = 'none';
             labels.forEach(el => el.style.display = 'none');
 
@@ -239,7 +243,6 @@
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                // MUNCULKAN KEMBALI SETELAH SELESAI
                 toolbar.style.display = 'flex';
                 labels.forEach(el => el.style.display = '');
                 alert("Laporan PDF berhasil disimpan!");
