@@ -11,26 +11,26 @@
         * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #000; margin: 0; padding: 0; }
         
-        /* PANEL KENDALI */
+        /* PANEL KENDALI DI BAWAH TABEL */
         .panel-kendali {
             background: #ffffff; 
-            padding: 10px; 
+            padding: 15px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            position: sticky; 
-            top: 0; 
-            z-index: 9999;
+            margin: 20px auto; 
+            max-width: 210mm;
+            border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            width: 100%;
+            width: 95%;
         }
         
-        button { padding: 10px 12px; cursor: pointer; border-radius: 6px; border: none; color: white; font-weight: bold; font-size: 11px; }
+        button { padding: 12px 15px; cursor: pointer; border-radius: 6px; border: none; color: white; font-weight: bold; font-size: 12px; }
         .btn-print { background: #0b544e; flex: 2; margin: 0 5px; }
         .btn-add { background: #27ae60; flex: 1; }
         .btn-reset { background: #dc3545; flex: 1; }
 
-        .kertas-wrapper { padding: 10px; display: flex; justify-content: center; }
+        .kertas-wrapper { padding: 10px; display: flex; flex-direction: column; align-items: center; }
         
         .kertas-a4 { 
             width: 210mm; 
@@ -38,32 +38,34 @@
             padding: 10mm 15mm; 
             background: white; 
             box-sizing: border-box; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         .judul-laporan { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 25px; text-transform: uppercase; color:#000; line-height: 1.2; }
         
         .identitas { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; color:#000; }
-        .identitas td { padding: 5px 0; vertical-align: middle; border: none !important; }
+        .identitas td { padding: 5px 0; border: none !important; }
         
-        /* PERBAIKAN 1: Lebar Label diperluas agar tidak wrap */
+        /* Nama Penyuluh tidak wrap */
         .label-id { width: 180px; font-weight: bold; white-space: nowrap; }
         .titik-id { width: 20px; text-align: center; font-weight: bold; }
         
         .identitas input, .identitas select { 
-            width: 100%; border: none; font-size: 11pt; padding: 2px; font-family: inherit; background: transparent; outline: none; color: black;
+            width: 100%; border: none; font-size: 11pt; padding: 2px; background: transparent; outline: none; color: black;
         }
 
+        /* Tabel Utama */
         table.tabel-data { width: 100%; border-collapse: collapse; border: 1.5px solid black; table-layout: fixed; }
         table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 8.5pt; text-transform: uppercase; }
         table.tabel-data td { border: 1px solid black; padding: 4px; vertical-align: middle; font-size: 9pt; text-align: center; }
 
-        /* PERBAIKAN 2: Penyeimbangan Kolom */
+        /* Penyeimbangan Kolom */
         .col-no { width: 30px; }
-        .col-tgl { width: 105px; } /* Dipersempit agar Judul Konten lebih luas */
+        .col-tgl { width: 105px; } 
         .col-judul { width: auto; }
         .col-foto { width: 95px; }
 
-        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8pt; font-family: inherit; background: transparent; padding: 0; }
+        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8pt; background: transparent; padding: 0; }
         textarea.input-judul { width: 100%; height: 110px; border: none; resize: none; font-size: 9pt; font-family: inherit; padding: 5px; background: transparent; overflow: hidden; }
 
         .foto-container { width: 85px; height: 140px; border: 1px dashed #ccc; margin: auto; position: relative; background: #fafafa; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -73,27 +75,17 @@
 
         @media screen and (max-width: 768px) {
             .kertas-a4 { width: 100% !important; padding: 12px !important; min-height: auto; }
-            .label-id { width: 130px; font-size: 10pt; }
-            .identitas input, .identitas select { font-size: 10pt; }
-            .foto-container { width: 75px; height: 120px; }
-            .col-tgl { width: 95px; }
+            .label-id { width: 140px; }
+            .col-tgl { width: 85px; }
             .col-foto { width: 85px; }
-            th { font-size: 7.5pt !important; }
+            .panel-kendali { width: 100%; border-radius: 0; }
         }
-
-        .no-export { display: none !important; }
     </style>
 </head>
 <body onload="muatDataLokal()">
 
-    <div class="panel-kendali" id="toolbar">
-        <button class="btn-add" onclick="tambahBaris()">+ BARIS</button>
-        <button class="btn-print" onclick="simpanPDFAndroid()">💾 SIMPAN PDF</button>
-        <button class="btn-reset" onclick="tampilkanPopup()">🔄 RESET</button>
-    </div>
-
-    <div class="kertas-wrapper" id="capture-area">
-        <div class="kertas-a4">
+    <div class="kertas-wrapper">
+        <div class="kertas-a4" id="capture-area">
             <div class="judul-laporan">
                 LAPORAN PENDERASAN INFORMASI DAN PEMBANGUNAN PERTANIAN<br>
                 PENYULUH PERTANIAN TAHUN 2026
@@ -116,17 +108,17 @@
                 <tr>
                     <td class="label-id">NAMA PENYULUH</td>
                     <td class="titik-id">:</td>
-                    <td><input type="text" id="id_nama" placeholder="Ketik Nama..." oninput="simpanTeks('id_nama')"></td>
+                    <td><input type="text" id="id_nama" placeholder="Cth. ABDUL RAHMAN, SP" oninput="simpanTeks('id_nama')"></td>
                 </tr>
                 <tr>
                     <td class="label-id">NIP</td>
                     <td class="titik-id">:</td>
-                    <td><input type="text" id="id_nip" placeholder="Ketik NIP..." oninput="formatNIP(this); simpanTeks('id_nip')"></td>
+                    <td><input type="text" id="id_nip" placeholder="Cth. 199009202020121001" oninput="formatNIP(this); simpanTeks('id_nip')"></td>
                 </tr>
                 <tr>
                     <td class="label-id">WILBIN/WKPP</td>
                     <td class="titik-id">:</td>
-                    <td><input type="text" id="id_wilayah" placeholder="Ketik Wilayah..." oninput="simpanTeks('id_wilayah')"></td>
+                    <td><input type="text" id="id_wilayah" placeholder="Cth. DESA MANURUNG" oninput="simpanTeks('id_wilayah')"></td>
                 </tr>
             </table>
 
@@ -140,12 +132,18 @@
                     </tr>
                     <tr>
                         <th class="col-foto">LIKE</th>
-                        <th class="col-foto">COMEN</th>
+                        <th class="col-foto">COMMENT</th>
                         <th class="col-foto">SHARE</th>
                     </tr>
                 </thead>
                 <tbody id="table-body"></tbody>
             </table>
+        </div>
+
+        <div class="panel-kendali" id="toolbar">
+            <button class="btn-add" onclick="tambahBaris()">+ BARIS</button>
+            <button class="btn-print" onclick="simpanPDFAndroid()">💾 SIMPAN PDF</button>
+            <button class="btn-reset" onclick="tampilkanPopup()">🔄 RESET</button>
         </div>
     </div>
 
@@ -170,7 +168,7 @@
                 <td><input type="date" id="tgl_${i}" class="input-tgl" oninput="simpanTeks('tgl_${i}')"></td>
                 <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
                 <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
-                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMEN</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
+                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
                 <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
             `;
             return tr;
