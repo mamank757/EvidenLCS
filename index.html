@@ -253,13 +253,21 @@
             toolbar.style.display = 'none';
             labels.forEach(el => el.style.visibility = 'hidden');
 
-            const opt = {
-                margin: [10, 20, 20, 20], // 2cm Margin Kiri, Kanan, Bawah
-                filename: `LCS_${nama}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+           const opt = {
+    margin: [10, 20, 20, 20], 
+    filename: `LCS_${nama}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { 
+        scale: 2, 
+        useCORS: true, 
+        scrollY: 0,
+        // Tambahkan baris di bawah ini untuk mencegah pemotongan otomatis
+        windowWidth: element.scrollWidth 
+    },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    // PAKSA SEMUA MASUK 1 HALAMAN
+    pagebreak: { mode: 'avoid-all' } 
+};
 
             html2pdf().set(opt).from(element).save().then(() => {
                 tglInputs.forEach(input => {
