@@ -177,6 +177,13 @@
     </div>
 
   <script>
+      function tanggalHariIni() {
+    const today = new Date();
+    const tahun = today.getFullYear();
+    const bulan = String(today.getMonth() + 1).padStart(2, '0');
+    const hari = String(today.getDate()).padStart(2, '0');
+    return `${tahun}-${bulan}-${hari}`; // format wajib untuk input date
+}
     const tbody = document.getElementById('table-body');
     let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 2;
 
@@ -191,7 +198,7 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${i}</td>
-            <td><input type="date" id="tgl_${i}" class="input-tgl" oninput="simpanTeks('tgl_${i}')"></td>
+            <td><input type="date" id="tgl_${i}" class="input-tgl" value="${tanggalHariIni()}" oninput="simpanTeks('tgl_${i}')"></td>
             <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
             <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
             <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
@@ -202,6 +209,12 @@
 
     function muatDataLokal() {
         tbody.innerHTML = "";
+        setTimeout(() => {
+    const el = document.getElementById(`tgl_${i}`);
+    if(el && !localStorage.getItem(`tgl_${i}`)){
+        simpanTeks(`tgl_${i}`);
+    }
+}, 0);
         for (let i = 1; i <= jumlahBaris; i++) {
             tbody.appendChild(renderBaris(i));
             
