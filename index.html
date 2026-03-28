@@ -26,7 +26,8 @@
         
         .kertas-a4 { 
             width: 210mm; 
-            min-height: 297mm; 
+            height: 297mm;
+overflow: hidden;
             padding: 1mm 15mm 5mm 15mm; 
             background: white; 
             box-sizing: border-box; 
@@ -70,7 +71,7 @@
             .col-tgl { width: 75px !important; } 
             .col-judul { width: auto !important; }
             .col-foto { width: 85px !important; }
-            table.tabel-data td { height: 160px; }
+            table.tabel-data td { height: 150px; }
             .foto-container { height: 150px; }
             .label-id { width: 120px; }
         }
@@ -249,10 +250,10 @@
             labels.forEach(el => el.style.visibility = 'hidden');
 
             const opt = {
-                margin: [1, 15, 5, 15], 
+                margin: [5, 15, 5, 15], 
                 filename: `LCS_${nama}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+                html2canvas: { scale: 1.5, useCORS: true, scrollY: 0 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 // Memaksa library menghindari pemutusan halaman otomatis
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
