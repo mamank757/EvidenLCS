@@ -11,18 +11,9 @@
         * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #000; margin: 0; padding: 0; }
         
-        /* PANEL KENDALI */
         .panel-kendali {
-            background: #ffffff; 
-            padding: 10px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            position: sticky; 
-            top: 0; 
-            z-index: 9999;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            width: 100%;
+            background: #ffffff; padding: 10px; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%;
         }
         
         button { padding: 10px 12px; cursor: pointer; border-radius: 6px; border: none; color: white; font-weight: bold; font-size: 11px; }
@@ -31,62 +22,30 @@
         .btn-reset { background: #dc3545; flex: 1; }
 
         .kertas-wrapper { padding: 10px; display: flex; justify-content: center; }
-        
-        .kertas-a4 { 
-            width: 210mm; 
-            min-height: 297mm; 
-            padding: 10mm 15mm; 
-            background: white; 
-            box-sizing: border-box; 
-        }
+        .kertas-a4 { width: 210mm; min-height: 297mm; padding: 10mm 15mm; background: white; box-sizing: border-box; }
 
         .judul-laporan { text-align: center; font-weight: bold; font-size: 13pt; margin-bottom: 25px; text-transform: uppercase; color:#000; line-height: 1.2; }
-        
         .identitas { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; color:#000; }
         .identitas td { padding: 5px 0; vertical-align: middle; border: none !important; }
-        
         .label-id { width: 180px; font-weight: bold; white-space: nowrap; }
         .titik-id { width: 20px; text-align: center; font-weight: bold; }
-        
-        .identitas input, .identitas select { 
-            width: 100%; border: none; font-size: 11pt; padding: 2px; font-family: inherit; background: transparent; outline: none; color: black;
-        }
+        .identitas input, .identitas select { width: 100%; border: none; font-size: 11pt; padding: 2px; font-family: inherit; background: transparent; outline: none; color: black; }
 
         table.tabel-data { width: 100%; border-collapse: collapse; border: 1.5px solid black; table-layout: fixed; }
         table.tabel-data th { background-color: #2ecc71 !important; color: black; padding: 8px 2px; border: 1px solid black; font-size: 8.5pt; text-transform: uppercase; }
-        
-        table.tabel-data td { 
-            border: 1px solid black; 
-            padding: 4px; 
-            vertical-align: middle; 
-            font-size: 9pt; 
-            text-align: center; 
-            height: 190px; 
-        }
-
-        table.tabel-data tr { page-break-inside: avoid; }
+        table.tabel-data td { border: 1px solid black; padding: 4px; vertical-align: middle; font-size: 9pt; text-align: center; height: 190px; }
 
         .col-no { width: 30px; }
-        .col-tgl { width: 110px; } 
+        .col-tgl { width: 100px; } 
         .col-judul { width: auto; }
-        .col-foto { width: 95px; }
+        .col-foto { width: 100px; }
 
-        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8.5pt; font-family: inherit; background: transparent; }
-        
-        textarea.input-judul { 
-            width: 95%; 
-            height: 170px; 
-            border: none; 
-            resize: none; 
-            font-size: 9pt; 
-            font-family: inherit; 
-            padding: 5px; 
-            background: transparent; 
-            overflow: hidden; 
-        }
+        .input-tgl { width: 100%; border: none; text-align: center; font-size: 8.5pt; font-family: inherit; background: transparent; outline: none; }
+        textarea.input-judul { width: 95%; height: 170px; border: none; resize: none; font-size: 9pt; font-family: inherit; padding: 5px; background: transparent; overflow: hidden; outline: none; }
 
+        /* PERBAIKAN: Container foto sekarang fit lebar kolom */
         .foto-container { 
-            width: 85px; 
+            width: 100%; 
             height: 180px; 
             border: 1px dashed #ccc; 
             margin: auto; 
@@ -97,19 +56,14 @@
             justify-content: center; 
             overflow: hidden; 
         }
-        
-        .img-preview { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .img-preview { width: 100%; height: 100%; object-fit: contain; display: none; background: #fff; }
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
-        .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; }
+        .label-foto { font-size: 7pt; color: #888; text-align: center; font-weight: bold; position: absolute; pointer-events: none; }
 
         @media screen and (max-width: 768px) {
-            .kertas-a4 { width: 100% !important; padding: 12px !important; min-height: auto; }
-            .label-id { width: 130px; }
-            .foto-container { width: 110px; height: 160px; }
-            .col-tgl { width: 70px; }
+            .kertas-a4 { width: 100% !important; padding: 10mm !important; min-height: auto; }
+            .col-tgl { width: 90px; }
         }
-
-        .no-export { display: none !important; }
     </style>
 </head>
 <body onload="muatDataLokal()">
@@ -176,133 +130,133 @@
     </div>
 
     <script>
- // 1. Definisikan variabel utama di awal agar tidak error
-const tbody = document.getElementById('table-body');
-let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 2;
+        const tbody = document.getElementById('table-body');
+        let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 2;
 
-// 2. Fungsi mendapatkan tanggal hari ini
-function getTanggalHariIni() {
-    const tgl = new Date();
-    const yyyy = tgl.getFullYear();
-    const mm = String(tgl.getMonth() + 1).padStart(2, '0');
-    const dd = String(tgl.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-}
+        function getTanggalHariIni() {
+            const tgl = new Date();
+            const yyyy = tgl.getFullYear();
+            const mm = String(tgl.getMonth() + 1).padStart(2, '0');
+            const dd = String(tgl.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
 
-// 3. Fungsi membuat baris tabel
-function renderBaris(i) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-        <td>${i}</td>
-        <td><input type="date" id="tgl_${i}" class="input-tgl" onchange="simpanTeks('tgl_${i}')"></td>
-        <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
-        <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
-        <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
-        <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
-    `;
-    return tr;
-}
+        function renderBaris(i) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${i}</td>
+                <td><input type="date" id="tgl_${i}" class="input-tgl" onchange="simpanTeks('tgl_${i}')"></td>
+                <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
+                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
+                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
+                <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
+            `;
+            return tr;
+        }
 
-// 4. Fungsi memuat data (dipanggil saat body onload)
-function muatDataLokal() {
-    tbody.innerHTML = "";
-    for (let i = 1; i <= jumlahBaris; i++) {
-        tbody.appendChild(renderBaris(i));
-        
-        // Muat Tanggal
-        const inputTgl = document.getElementById(`tgl_${i}`);
-        const tglSimpan = localStorage.getItem(`tgl_${i}`);
-        inputTgl.value = tglSimpan ? tglSimpan : getTanggalHariIni();
+        function muatDataLokal() {
+            tbody.innerHTML = "";
+            for (let i = 1; i <= jumlahBaris; i++) {
+                tbody.appendChild(renderBaris(i));
+                const inputTgl = document.getElementById(`tgl_${i}`);
+                const tglSimpan = localStorage.getItem(`tgl_${i}`);
+                inputTgl.value = tglSimpan ? tglSimpan : getTanggalHariIni();
 
-        // Muat Judul
-        const judulSimpan = localStorage.getItem(`judul_${i}`);
-        if(judulSimpan) document.getElementById(`judul_${i}`).value = judulSimpan;
-        
-        // Muat Gambar
-        ['like', 'comen', 'share'].forEach(type => {
-            const idImg = `img_${type}_${i}`;
-            const savedImg = localStorage.getItem(idImg);
-            if(savedImg) {
-                const imgEl = document.getElementById(idImg);
-                if(imgEl) {
-                    imgEl.src = savedImg;
-                    imgEl.style.display = 'block';
-                }
+                const judulSimpan = localStorage.getItem(`judul_${i}`);
+                if(judulSimpan) document.getElementById(`judul_${i}`).value = judulSimpan;
+                
+                ['like', 'comen', 'share'].forEach(type => {
+                    const idImg = `img_${type}_${i}`;
+                    const savedImg = localStorage.getItem(idImg);
+                    if(savedImg) {
+                        const imgEl = document.getElementById(idImg);
+                        imgEl.src = savedImg;
+                        imgEl.style.display = 'block';
+                    }
+                });
             }
-        });
-    }
-    // Muat Identitas
-    ['id_periode', 'id_nama', 'id_nip', 'id_wilayah'].forEach(id => {
-        const val = localStorage.getItem(id);
-        if(val) document.getElementById(id).value = val;
-    });
-}
+            ['id_periode', 'id_nama', 'id_nip', 'id_wilayah'].forEach(id => {
+                const val = localStorage.getItem(id);
+                if(val) document.getElementById(id).value = val;
+            });
+        }
 
-// 5. Fungsi tambah baris
-function tambahBaris() {
-    jumlahBaris++;
-    localStorage.setItem('jumlahBaris', jumlahBaris);
-    const tr = renderBaris(jumlahBaris);
-    tbody.appendChild(tr);
-    
-    const tglBaru = document.getElementById(`tgl_${jumlahBaris}`);
-    tglBaru.value = getTanggalHariIni();
-    localStorage.setItem(`tgl_${jumlahBaris}`, tglBaru.value);
-}
+        function tambahBaris() {
+            jumlahBaris++;
+            localStorage.setItem('jumlahBaris', jumlahBaris);
+            tbody.appendChild(renderBaris(jumlahBaris));
+            const tglBaru = document.getElementById(`tgl_${jumlahBaris}`);
+            tglBaru.value = getTanggalHariIni();
+            localStorage.setItem(`tgl_${jumlahBaris}`, tglBaru.value);
+        }
 
-// 6. Fungsi pendukung lainnya (PENTING!)
-function simpanTeks(id) { 
-    const el = document.getElementById(id);
-    if(el) localStorage.setItem(id, el.value); 
-}
+        function simpanTeks(id) { 
+            const el = document.getElementById(id);
+            if(el) localStorage.setItem(id, el.value); 
+        }
 
-function prosesGambar(input, imgId) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.getElementById(imgId);
-            img.src = e.target.result;
-            img.style.display = 'block';
-            try { 
-                localStorage.setItem(imgId, e.target.result); 
-            } catch(err) { 
-                alert("Memori penuh! Coba gunakan foto yang lebih kecil."); 
+        function prosesGambar(input, imgId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(imgId);
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    try { localStorage.setItem(imgId, e.target.result); } catch(err) { alert("Memori penuh!"); }
+                }
+                reader.readAsDataURL(input.files[0]);
             }
         }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
 
-function formatNIP(input) {
-    input.value = input.value.replace(/\D/g, '').substr(0, 18);
-}
+        function formatNIP(input) {
+            input.value = input.value.replace(/\D/g, '').substr(0, 18);
+        }
 
-function simpanPDFAndroid() {
-    const element = document.getElementById('capture-area');
-    const toolbar = document.getElementById('toolbar');
-    const labels = document.querySelectorAll('.label-eviden');
-    const nama = document.getElementById('id_nama').value || "PPL";
-    
-    toolbar.style.display = 'none';
-    labels.forEach(el => el.style.visibility = 'hidden');
+        function simpanPDFAndroid() {
+            const element = document.getElementById('capture-area');
+            const toolbar = document.getElementById('toolbar');
+            const labels = document.querySelectorAll('.label-eviden');
+            const tglInputs = document.querySelectorAll('.input-tgl');
+            const nama = document.getElementById('id_nama').value || "PPL";
+            
+            // Trik Ubah format tanggal ke Indo sebelum cetak
+            tglInputs.forEach(input => {
+                if(input.value) {
+                    const [y, m, d] = input.value.split('-');
+                    input.type = 'text';
+                    input.value = `${d}-${m}-${y}`;
+                }
+            });
 
-    const opt = {
-        margin: [8, 5, 8, 5],
-        filename: `LCS_${nama}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+            toolbar.style.display = 'none';
+            labels.forEach(el => el.style.visibility = 'hidden');
 
-    html2pdf().set(opt).from(element).save().then(() => {
-        toolbar.style.display = 'flex';
-        labels.forEach(el => el.style.visibility = 'visible');
-    });
-}
+            const opt = {
+                margin: [8, 5, 8, 5],
+                filename: `LCS_${nama}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
 
-function tampilkanPopup() { document.getElementById('popup-reset').style.display = 'flex'; }
-function tutupPopup() { document.getElementById('popup-reset').style.display = 'none'; }
-function konfirmasiReset() { localStorage.clear(); location.reload(); }
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Kembalikan ke semula setelah cetak
+                tglInputs.forEach(input => {
+                    if(input.value.includes('-')) {
+                        const [d, m, y] = input.value.split('-');
+                        input.type = 'date';
+                        input.value = `${y}-${m}-${d}`;
+                    }
+                });
+                toolbar.style.display = 'flex';
+                labels.forEach(el => el.style.visibility = 'visible');
+                alert("PDF Berhasil Disimpan!");
+            });
+        }
+
+        function tampilkanPopup() { document.getElementById('popup-reset').style.display = 'flex'; }
+        function tutupPopup() { document.getElementById('popup-reset').style.display = 'none'; }
+        function konfirmasiReset() { localStorage.clear(); location.reload(); }
     </script>
 </body>
 </html>
