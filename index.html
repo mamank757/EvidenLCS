@@ -14,7 +14,7 @@
         /* TOMBOL HOME MELAYANG */
         .btn-home {
             position: fixed;
-            bottom: 80px; /* Di atas tombol tambah baris agar tidak tabrakan di mobile */
+            bottom: 80px;
             right: 20px;
             background: #27ae60;
             color: white;
@@ -85,19 +85,21 @@
             font-size: 9pt; 
             text-align: center; 
             height: auto; 
+            word-wrap: break-word; /* Tambahan */
+            overflow-wrap: break-word; /* Tambahan */
         }
 
         table.tabel-data tr { page-break-inside: avoid; }
 
-        .col-no { width: 25px; }
-        .col-tgl { width: 160px; }
-        .col-judul { width: auto; }
-        .col-foto { width: 90px; }
+        .col-no { width: 30px; }
+        .col-tgl { width: 100px; }
+        .col-judul { width: auto; } /* Biarkan fleksibel */
+        .col-foto { width: 95px; }
 
         .input-tgl { width: 100%; border: none; text-align: center; font-size: 9pt; font-family: inherit; background: transparent; }
         
         textarea.input-judul { 
-            width: 95%; 
+            width: 100%; 
             height: auto; 
             border: none; 
             resize: none; 
@@ -105,12 +107,16 @@
             font-family: inherit; 
             padding: 5px; 
             background: transparent; 
-            overflow: hidden; 
+            overflow: hidden;
+            display: block;
+            white-space: pre-wrap; 
+            word-break: break-word;
+            text-align: left;
         }
 
         .foto-container { 
             width: 100%; 
-            height: 160px; 
+            height: 140px; 
             border: 1px dashed #ccc; 
             margin: auto; 
             position: relative; 
@@ -125,17 +131,18 @@
         .file-input { position: absolute; width: 100%; height: 100%; opacity: 0; z-index: 10; cursor: pointer; }
         .label-foto { font-size: 8pt; color: #888; text-align: center; font-weight: bold; }
 
-     @media screen and (max-width: 768px)
-        { .kertas-a4 { width: 100% !important; padding: 10px !important; min-height: auto; }
-          .label-id { width: 110px; font-size: 8pt; }
-          .col-tgl { width: 70px; }
-          .col-foto { width: auto; } th { font-size: 8pt !important; }
-          .foto-container { width: 100%; height: 110px; } table.tabel-data td { height: 130px; }
-          textarea.input-judul { height: 110px; font-size: 9pt; } 
-          .btn-home { bottom: 20px; width: 45px; height: 45px; font-size: 20px; }
+        @media screen and (max-width: 768px) { 
+            .kertas-a4 { width: 100% !important; padding: 10px !important; min-height: auto; }
+            .label-id { width: 110px; font-size: 8pt; }
+            .col-tgl { width: 70px; }
+            .col-foto { width: 80px; } 
+            th { font-size: 8pt !important; }
+            .foto-container { height: 100px; }
+            textarea.input-judul { font-size: 9pt; } 
+            .btn-home { bottom: 20px; width: 45px; height: 45px; font-size: 20px; }
         }
 
-    .no-export { display: none !important; }
+        .no-export { display: none !important; }
     </style>
 </head>
 <body onload="muatDataLokal()">
@@ -204,13 +211,13 @@
         </div>
     </div>
 
-  <script>
-    function tanggalHariIniFormatFile() {
-        const today = new Date();
-        const hari = String(today.getDate()).padStart(2, '0');
-        const bulan = String(today.getMonth() + 1).padStart(2, '0');
-        const tahun = today.getFullYear();
-        return `${hari}-${bulan}-${tahun}`;
+<script>
+    const tbody = document.getElementById('table-body');
+    let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 3;
+
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
     }
 
     function tanggalHariIni() {
@@ -218,21 +225,20 @@
         return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; 
     }
 
-    const tbody = document.getElementById('table-body');
-    let jumlahBaris = parseInt(localStorage.getItem('jumlahBaris')) || 3;
-
     function formatTanggalIndonesia(tgl) {
         if (!tgl) return "";
         const [tahun, bulan, hari] = tgl.split("-");
         return `${hari}-${bulan}-${tahun}`;
     }
 
-   function renderBaris(i) {
+    function renderBaris(i) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${i}</td>
             <td><input type="date" id="tgl_${i}" class="input-tgl" value="${tanggalHariIni()}" oninput="simpanTeks('tgl_${i}')"></td>
-            <td><textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}')"></textarea></td>
+            <td class="col-judul">
+                <textarea id="judul_${i}" class="input-judul" placeholder="Isi judul..." oninput="simpanTeks('judul_${i}'); autoResize(this)" rows="1"></textarea>
+            </td>
             <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>LIKE</span><img id="img_like_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_like_${i}')"></div></td>
             <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>COMMENT</span><img id="img_comen_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_comen_${i}')"></div></td>
             <td><div class="foto-container"><span class="label-foto label-eviden">FOTO<br>SHARE</span><img id="img_share_${i}" class="img-preview"><input type="file" class="file-input label-eviden" onchange="prosesGambar(this, 'img_share_${i}')"></div></td>
@@ -244,10 +250,17 @@
         tbody.innerHTML = "";
         for (let i = 1; i <= jumlahBaris; i++) {
             tbody.appendChild(renderBaris(i));
+            
             const tglSimpan = localStorage.getItem(`tgl_${i}`);
             if(tglSimpan) document.getElementById(`tgl_${i}`).value = tglSimpan;
+            
             const judulSimpan = localStorage.getItem(`judul_${i}`);
-            if(judulSimpan) document.getElementById(`judul_${i}`).value = judulSimpan;
+            if(judulSimpan) {
+                const el = document.getElementById(`judul_${i}`);
+                el.value = judulSimpan;
+                autoResize(el);
+            }
+            
             ['like', 'comen', 'share'].forEach(type => {
                 const savedImg = localStorage.getItem(`img_${type}_${i}`);
                 if(savedImg) {
@@ -297,7 +310,6 @@
         const labels = document.querySelectorAll('.label-eviden');
         const nama = document.getElementById('id_nama').value || "PPL";
         
-        // Sembunyikan elemen navigasi sebelum export
         toolbar.style.display = 'none';
         homeBtn.style.display = 'none';
         labels.forEach(el => el.style.display = 'none');
@@ -314,9 +326,9 @@
 
         const opt = {
             margin: [8, 10, 8, 10],
-            filename: `LCS_${tanggalHariIniFormatFile()}_${nama}.pdf`,
+            filename: `LCS_${nama}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
